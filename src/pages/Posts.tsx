@@ -1,18 +1,18 @@
 import { useLocation } from "react-router-dom";
-import useApiHook from "./useApiHook";
-import { Todos } from "./interfaces";
+import useApiHook from "../utils/useApiHook";
+import { Post } from "../interfaces";
 
-function UserTodos() {
+function Posts() {
     const location = useLocation();
     const userId: number = Number(location.pathname.split('/')[2]);
-  const { data, isPending, error } = useApiHook<Todos>(`/users/${userId}/posts`);
+  const { data, isPending, error } = useApiHook<Post>(`/users/${userId}/posts`);
 
   return (
     <div>
       {isPending && <div>Loading...</div>}
       {error && <div>{error.message}</div>}
       {data &&
-        data.map((val: Todos) => (
+        data.map((val: Post) => (
           <div
             key={val.id}
             style={{
@@ -26,11 +26,11 @@ function UserTodos() {
             Title: {val.title}
             <br />
             <br />
-            Completed: {val.completed ? "Yes" : "No"}
+            Body: {val.body}
           </div>
         ))}
     </div>
   );
 }
 
-export default UserTodos;
+export default Posts;

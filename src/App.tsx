@@ -1,11 +1,11 @@
 import { Route, Switch } from "react-router-dom";
 
-import Users from "./Users";
-import Posts from "./Posts";
-import Home from "./Home";
+import Users from "./pages/Users";
+import Posts from "./pages/Posts";
+import Home from "./pages/Home";
 
 import "./App.css";
-import UserTodos from "./Todos";
+import UserTodos from "./pages/Todos";
 
 function App() {
   return (

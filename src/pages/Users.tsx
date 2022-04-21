@@ -1,6 +1,6 @@
 // import { useEffect } from "react";
-import useApiHook from "./useApiHook";
-import { User } from "./interfaces";
+import useApiHook from "../utils/useApiHook";
+import { User } from "../interfaces";
 import { useHistory } from "react-router-dom";
 
 function Users() {
