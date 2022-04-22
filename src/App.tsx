@@ -1,29 +1,38 @@
 import { Route, Switch } from "react-router-dom";
 
 import Users from "./pages/Users";
-import Posts from "./pages/Posts";
+import UserPosts from "./pages/Posts";
 import Home from "./pages/Home";
+import UserTodos from "./pages/Todos";
+import UserForm from "./pages/UserForm";
+import PostForm from "./pages/PostForm";
 
 import "./App.css";
-import UserTodos from "./pages/Todos";
 
 function App() {
     return (
         <div className="App">
             <Switch>
-                <Route exact path="/">
-                    <Home />
-                </Route>
-                <Route exact path="/users">
-                    <Users />
-                </Route>
-                <Route exact path="/users/:id/posts">
-                    <Posts />
-                </Route>
+                <Route exact path="/" children={<Home />} />
+                <Route exact path="/users" children={<Users />} />
+                <Route exact path="/users/:id/posts" children={<UserPosts />} />
+                <Route exact path="/users/:id/todos" children={<UserTodos />} />
+                <Route
+                    exact
+                    path="/users/:id"
+                    children={<UserForm edit={true} />}
+                />
+                <Route
+                    exact
+                    path="/createuser"
+                    children={<UserForm edit={false} />}
+                />
+                <Route
+                    exact
+                    path="/users/:id/new_post"
+                    children={<PostForm />}
+                />
             </Switch>
-            <Route exact path="/users/:id/todos">
-                <UserTodos />
-            </Route>
         </div>
     );
 }

@@ -1,7 +1,8 @@
 // import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import useApiHook from "../utils/useApiHook";
 import { User } from "../interfaces";
-import { useHistory } from "react-router-dom";
 
 function Users() {
     const { data, isPending, error } = useApiHook<User>("/users");
@@ -11,6 +12,7 @@ function Users() {
         <div>
             {isPending && <div>Loading...</div>}
             {error && <div>{error.message}</div>}
+            {data && <h1 style={{ textAlign: "center" }}>Users</h1>}
             {data &&
                 data.map((val: User) => (
                     <div

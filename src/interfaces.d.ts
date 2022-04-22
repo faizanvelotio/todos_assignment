@@ -39,3 +39,16 @@ export interface Todos {
     title: string;
     completed: boolean;
 }
+
+export interface Comment {
+    postId: number;
+    id: number;
+    name: string;
+    email: string;
+    body: string;
+}
+
+export interface PostWithComment {
+    post: Post;
+    comments: Array<Comment>;
+}

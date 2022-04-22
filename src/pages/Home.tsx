@@ -13,6 +13,7 @@ function Home() {
                 style={{
                     color: "blue",
                     textDecorationLine: "underline",
+                    cursor: "pointer",
                 }}
                 onClick={onClick}
             >
