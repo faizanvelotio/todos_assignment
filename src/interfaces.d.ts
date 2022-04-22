@@ -27,15 +27,15 @@ interface Company {
 }
 
 export interface Post {
-    userid: number,
-    id: number,
-    title: string,
-    body: string
+    userid: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
 export interface Todos {
-    userid: number,
-    id: number,
-    title: string,
-    completed: boolean
+    userid: number;
+    id: number;
+    title: string;
+    completed: boolean;
 }
