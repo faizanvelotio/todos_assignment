@@ -4,20 +4,32 @@ import axios from "axios";
 
 import useLocationId from "../utils/useLocationId";
 // import useApiHook from "../utils/useApiHook";
-import { Post, PostWithComment } from "../interfaces";
+import { Post, PostWithComment, ViewPost } from "../interfaces";
 import { UserContentContext } from "../context/UserContentContext";
+import SinglePost from "./SinglePost";
 
 function Posts() {
     const userId: number = useLocationId(); // Get the id parameter for URL
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true); // If the posts are loading or not
+    const [viewablePost, setViewablePost] = useState<ViewPost>({
+        view: false,
+        post: {
+            post: {
+                userid: 0,
+                title: "",
+                body: "",
+                id: 0,
+            },
+            comments: [],
+        },
+        index: -1,
+    });
 
     const { state, dispatch } = useContext(UserContentContext);
     const { user_posts } = state;
-
     useEffect(() => {
         // If the posts in the state is of different user, then update the state,
         // else update render with the same state
-        console.log("from posts useeffect");
         if (userId !== user_posts.userId) {
             axios
                 .get(`/users/${userId}/posts`)
@@ -28,7 +40,7 @@ function Posts() {
                     posts_without_comments.forEach((val: Post) => {
                         posts_with_comments.push({
                             post: val,
-                            comments: [],
+                            comments: null,
                         });
                     });
                     dispatch({
@@ -54,20 +66,34 @@ function Posts() {
                 </Link>
             </div>
             {/* {error && <div>{error.message}</div>} */}
+            {viewablePost.view && (
+                <SinglePost
+                    post={viewablePost.post}
+                    setter={setViewablePost}
+                    index={viewablePost.index}
+                />
+            )}
             {isLoading ? (
                 <div>Loading...</div>
             ) : (
                 <>
                     <h1 style={{ textAlign: "center" }}>Posts</h1>
                     {user_posts.posts &&
-                        user_posts.posts.map((val: PostWithComment) => (
+                        user_posts.posts.map((val: PostWithComment, idx) => (
                             <div
                                 key={val.post.id}
+                                onClick={() => {
+                                    setViewablePost({
+                                        view: true,
+                                        post: val,
+                                        index: idx,
+                                    });
+                                }}
                                 style={{
                                     minHeight: "30px",
                                     margin: "20px",
                                     padding: "30px",
-                                    //   cursor: "pointer",
+                                    cursor: "pointer",
                                     border: "1px solid black",
                                 }}
                             >

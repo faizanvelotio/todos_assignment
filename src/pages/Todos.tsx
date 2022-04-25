@@ -16,7 +16,7 @@ function UserTodos() {
     useEffect(() => {
         // If the posts in the state is of different user, then update the state,
         // else update render with the same state
-        console.log("from TODOS useeffect");
+        // console.log("from TODOS useeffect");
         if (userId !== user_todos.userId) {
             axios
                 .get(`/users/${userId}/todos`)

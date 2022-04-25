@@ -19,7 +19,7 @@ type Action =
       }
     | {
           type: "SET_COMMENT_FOR_POST";
-          payload: { postId: number; comments: Array<Comment> };
+          payload: { postIndex: number; comments: Array<Comment> };
       }
     | { type: "SET_CURRENT_USER_ID"; payload: number };
 
@@ -51,14 +51,13 @@ const reducer = (state: AppState, action: Action) => {
                 currentUser: action.payload,
             };
         case "SET_COMMENT_FOR_POST":
-            if (state.user_posts.posts !== null) {
-                for (let post of state.user_posts.posts) {
-                    if (post.post.id === action.payload.postId) {
-                        post.comments = action.payload.comments;
-                    }
-                }
+            const newState = { ...state };
+            if (newState.user_posts.posts !== null) {
+                // console.log(state.user_posts.posts[action.payload.postIndex])
+                newState.user_posts.posts[action.payload.postIndex].comments =
+                    action.payload.comments;
             }
-            return state;
+            return newState;
         default:
             return state;
     }
