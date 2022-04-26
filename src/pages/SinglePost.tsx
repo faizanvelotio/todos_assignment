@@ -29,7 +29,7 @@ function SinglePost({
         }
     }, [dispatch, post, index]);
 
-    console.log(post, index);
+    // console.log(post, index);
 
     return (
         <div>

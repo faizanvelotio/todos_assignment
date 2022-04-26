@@ -4,9 +4,9 @@ import * as Yup from "yup";
 import useLocationId from "../utils/useLocationId";
 
 function UserForm({ edit }: { edit: boolean }) {
-    const userId: number = useLocationId();
+    // const userId: number = useLocationId();
 
-    console.log("user id", userId);
+    // console.log("user id", userId);
 
     const validate = Yup.object({
         name: Yup.string()

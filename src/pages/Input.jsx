@@ -4,7 +4,7 @@ import React from 'react'
 
 const Input = ({label, ...props}) => {
     const[field, meta] = useField(props);
-    console.log(meta);
+    // console.log(meta);
   return (
     <div>
         <label htmlFor={field.name}>{label}</label>

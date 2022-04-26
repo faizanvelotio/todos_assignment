@@ -8,10 +8,12 @@ import UserForm from "./pages/UserForm";
 import PostForm from "./pages/PostForm";
 
 import "./App.css";
+import Navbar from "./components/Navbar";
 
 function App() {
     return (
         <div className="App">
+            <Navbar />
             <Switch>
                 <Route exact path="/" children={<Home />} />
                 <Route exact path="/users" children={<Users />} />
