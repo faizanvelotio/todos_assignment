@@ -1,37 +1,68 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-// import useApiHook from "../utils/useApiHook";
-import useLocationId from "../utils/useLocationId";
-import { Todos } from "../interfaces";
-import { UserContentContext } from "../context/UserContentContext";
+import { UserContentContext } from "src/context/UserContentContext";
+import useLocationId from "src/utils/useLocationId";
+import { getUserTodos } from "src/api/Todos";
 
-function UserTodos() {
+const UserTodos: React.FC = () => {
     const userId: number = useLocationId();
     const [isLoading, setIsLoading] = useState(true);
 
     const { state, dispatch } = useContext(UserContentContext);
-    const { user_todos } = state;
+    const { userTodos } = state;
+
+    const fetchUserTodos = useCallback(
+        async (userId: number) => {
+            try {
+                const todos: Todos[] = await getUserTodos(userId);
+                dispatch({
+                    type: ActionType.SET_TODOS,
+                    payload: { userId: userId, todos: todos },
+                });
+            } catch (e) {
+                // Showing the error using toast
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [dispatch]
+    );
 
     useEffect(() => {
         // If the posts in the state is of different user, then update the state,
         // else update render with the same state
-        // console.log("from TODOS useeffect");
-        if (userId !== user_todos.userId) {
-            axios
-                .get(`/users/${userId}/todos`)
-                .then((response) => {
-                    dispatch({
-                        type: "SET_TODOS",
-                        payload: { userId: userId, todos: response.data },
-                    });
-                    setIsLoading(false);
-                })
-                .catch((err) => {});
+        if (userId !== userTodos.userId) {
+            fetchUserTodos(userId);
         } else {
             setIsLoading(false);
         }
-    }, [userId, user_todos, dispatch]);
+    }, [userId, userTodos, fetchUserTodos]);
+
+    const renderUserTodos = useCallback((): JSX.Element => {
+        return (
+            <>
+                <h1 style={{ textAlign: "center" }}>Todos</h1>
+                {userTodos.todos &&
+                    userTodos.todos.map((todo: Todos) => (
+                        <div
+                            key={todo.id}
+                            style={{
+                                minHeight: "30px",
+                                margin: "20px",
+                                padding: "30px",
+                                cursor: "pointer",
+                                border: "1px solid black",
+                            }}
+                        >
+                            Title: {todo.title}
+                            <br />
+                            <br />
+                            Completed: {todo.completed ? "Yes" : "No"}
+                        </div>
+                    ))}
+            </>
+        );
+    }, [userTodos]);
 
     return (
         <div>
@@ -41,33 +72,9 @@ function UserTodos() {
                 </Link>
             </div>
             {/* {error && <div>{error.message}</div>} */}
-            {isLoading ? (
-                <div>Loading...</div>
-            ) : (
-                <>
-                    <h1 style={{ textAlign: "center" }}>Todos</h1>
-                    {user_todos.todos &&
-                        user_todos.todos.map((val: Todos) => (
-                            <div
-                                key={val.id}
-                                style={{
-                                    minHeight: "30px",
-                                    margin: "20px",
-                                    padding: "30px",
-                                    //   cursor: "pointer",
-                                    border: "1px solid black",
-                                }}
-                            >
-                                Title: {val.title}
-                                <br />
-                                <br />
-                                Completed: {val.completed ? "Yes" : "No"}
-                            </div>
-                        ))}
-                </>
-            )}
+            {isLoading ? <div>Loading...</div> : renderUserTodos()}
         </div>
     );
-}
+};
 
 export default UserTodos;

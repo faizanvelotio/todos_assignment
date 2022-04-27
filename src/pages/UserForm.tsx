@@ -1,33 +1,8 @@
 import { Formik, Form } from "formik";
-import Input from "./Input";
-import * as Yup from "yup";
-import useLocationId from "../utils/useLocationId";
+import Input from "src/pages/Input";
+import { validator } from "src/utils/validator";
 
 function UserForm({ edit }: { edit: boolean }) {
-    // const userId: number = useLocationId();
-
-    // console.log("user id", userId);
-
-    const validate = Yup.object({
-        name: Yup.string()
-            .min(2, "Minimum 2 characters are required.")
-            .required("Name is required."),
-        username: Yup.string()
-            .min(2, "Minimum 2 characters are required.")
-            .required("Username is required."),
-        email: Yup.string()
-            .email("Email is invalid")
-            .required("Email is required"),
-        website: Yup.string().url(),
-        phone: Yup.string().matches(
-            new RegExp(/[\d -]+/),
-            "Phone number should be numeric"
-        ),
-        zipcode: Yup.string().matches(
-            new RegExp(/\d\d\d\d\d\d/),
-            "Zipcode should be of length 6."
-        ),
-    });
     return (
         <Formik
             initialValues={{
@@ -43,7 +18,7 @@ function UserForm({ edit }: { edit: boolean }) {
                 phone: "",
                 website: "",
             }}
-            validationSchema={validate}
+            validationSchema={validator}
             onSubmit={(values) => {
                 console.log(values);
             }}

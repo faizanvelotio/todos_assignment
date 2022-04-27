@@ -1,36 +1,70 @@
-// import { useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-
-import useApiHook from "../utils/useApiHook";
-import { User } from "../interfaces";
+import { getUsers } from "src/api/User";
+import { UserContentContext } from "src/context/UserContentContext";
 
 function Users() {
-    const { data, isPending, error } = useApiHook<User>("/users");
     const history = useHistory();
+    const [isLoading, setIsLoading] = useState(true);
+
+    const { state, dispatch } = useContext(UserContentContext);
+    const { users } = state;
+    console.log("from users", users);
+    const fetchUsers = useCallback(async () => {
+        try {
+            const users: User[] = await getUsers();
+            console.log("hey", users);
+            console.log("rpin", ActionType.SET_COMMENT_FOR_POST);
+            dispatch({ type: ActionType.SET_USERS, payload: users });
+        } catch (e) {
+            // Toastify the error
+        } finally {
+            setIsLoading(false);
+        }
+    }, [dispatch]);
+
+    const handleUserClick = useCallback(
+        (userId: number) => {
+            history.push(`users/${userId}/posts`);
+        },
+        [history]
+    );
+
+    useEffect(() => {
+        if (users === null) {
+            fetchUsers();
+        } else {
+            setIsLoading(false);
+        }
+    }, [fetchUsers, users]);
+
+    const renderUsers = useCallback(
+        () =>
+            users
+                ? users.map((user: User) => (
+                      <div
+                          key={user.id}
+                          style={{
+                              height: "24px",
+                              margin: "10px",
+                              padding: "10px",
+                              cursor: "pointer",
+                              border: "1px solid black",
+                          }}
+                          onClick={() => handleUserClick(user.id)}
+                      >
+                          {user.name}
+                      </div>
+                  ))
+                : null,
+        [users, handleUserClick]
+    );
 
     return (
         <div>
-            {isPending && <div>Loading...</div>}
-            {error && <div>{error.message}</div>}
-            {data && <h1 style={{ textAlign: "center" }}>Users</h1>}
-            {data &&
-                data.map((val: User) => (
-                    <div
-                        key={val.id}
-                        style={{
-                            height: "24px",
-                            margin: "10px",
-                            padding: "10px",
-                            cursor: "pointer",
-                            border: "1px solid black",
-                        }}
-                        onClick={() => {
-                            history.push(`/users/${val.id}/posts`);
-                        }}
-                    >
-                        {val.name}
-                    </div>
-                ))}
+            {isLoading && <div>Loading...</div>}
+            {users && <h1 style={{ textAlign: "center" }}>Users</h1>}
+            {renderUsers()}
         </div>
     );
 }

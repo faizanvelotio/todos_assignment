@@ -1,4 +1,12 @@
-export interface User {
+declare enum ActionType {
+    SET_USERS = "SET_USERS",
+    SET_POSTS = "SET_POSTS",
+    SET_TODOS = "SET_TODOS",
+    SET_COMMENT_FOR_POST = "SET_COMMENT_FOR_POST",
+    SET_CURRENT_USER_ID = "SET_CURRENT_USER_ID",
+}
+
+declare interface User {
     id: number;
     name: string;
     username: string;
@@ -26,21 +34,22 @@ interface Company {
     bs: string;
 }
 
-export interface Post {
+declare interface Post {
     userid: number;
     id: number;
     title: string;
     body: string;
 }
 
-export interface Todos {
+declare interface Todos {
     userid: number;
     id: number;
+    q;
     title: string;
     completed: boolean;
 }
 
-export interface Comment {
+declare interface Comment {
     postId: number;
     id: number;
     name: string;
@@ -48,12 +57,12 @@ export interface Comment {
     body: string;
 }
 
-export interface PostWithComment {
+declare interface PostWithComment {
     post: Post;
-    comments: Array<Comment> | null;
+    comments: Comment[] | null;
 }
 
-export interface ViewPost {
+declare interface ViewPost {
     view: boolean; // Boolean value for controlling the opening and closing of posts
     post: PostWithComment; // The post which need to be displayed
     index: number; // Index value passed for updating the post array in O(1) time

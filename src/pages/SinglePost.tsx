@@ -1,54 +1,54 @@
-import { ViewPost, PostWithComment, Comment } from "../interfaces";
-import { UserContentContext } from "../context/UserContentContext";
-import { useContext, useEffect } from "react";
-import axios from "axios";
+import { UserContentContext } from "src/context/UserContentContext";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { getPostComments } from "src/api/Post";
 
-function SinglePost({
-    post,
-    index,
-    setter,
-}: {
+interface SinglePostProps {
     post: PostWithComment;
     index: number;
     setter: React.Dispatch<React.SetStateAction<ViewPost>>;
-}) {
-    const closeSinglePostDialog = () => {
-        setter((prevState) => ({ ...prevState, view: false }));
-    };
+}
+
+const SinglePost: React.FC<SinglePostProps> = ({ post, index, setter }) => {
     const { dispatch } = useContext(UserContentContext);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const closeSinglePostDialog = useCallback(() => {
+        setter((prevState) => ({ ...prevState, view: false }));
+    }, [setter]);
+
+    const fetchPostComments = useCallback(
+        async (postId: number, idx: number) => {
+            try {
+                const comments: Comment[] = await getPostComments(postId);
+                dispatch({
+                    type: ActionType.SET_COMMENT_FOR_POST,
+                    payload: { postIndex: idx, comments: comments },
+                });
+            } catch (e) {
+                // Showing the error using toast
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [dispatch]
+    );
 
     useEffect(() => {
         if (post.comments === null) {
-            axios.get(`/comments?postId=${post.post.id}`).then((response) => {
-                // console.log("from single post axios", response.data);
-                dispatch({
-                    type: "SET_COMMENT_FOR_POST",
-                    payload: { postIndex: index, comments: response.data },
-                });
-            });
+            fetchPostComments(post.post.id, index);
+        } else {
+            setIsLoading(false);
         }
-    }, [dispatch, post, index]);
+    }, [post, index, fetchPostComments]);
 
-    // console.log(post, index);
-
-    return (
-        <div>
-            <h2 style={{ textAlign: "center", fontWeight: "bold" }}>
-                Single Post
-            </h2>
-            <div
-                onClick={closeSinglePostDialog}
-                style={{ color: "blue", textAlign: "right" }}
-            >
-                Close Dialog
-            </div>
-            <div>Title: {post.post.title}</div>
-            <div>Body: {post.post.body}</div>
-            {post.comments ? (
+    const renderSinglePost = useCallback(() => {
+        if (post.comments && post.comments.length === 0) {
+            return <div>No comments yet</div>;
+        } else {
+            return (
                 <div>
                     <h3>Comments</h3>
-
-                    {post.comments.length !== 0 ? (
+                    {post.comments &&
                         post.comments.map((comment: Comment) => {
                             return (
                                 <div
@@ -67,16 +67,27 @@ function SinglePost({
                                     <div>{comment.body}</div>
                                 </div>
                             );
-                        })
-                    ) : (
-                        <div>No comments</div>
-                    )}
+                        })}
                 </div>
-            ) : (
-                <div>Loading comments</div>
-            )}
+            );
+        }
+    }, [post]);
+    return (
+        <div>
+            <h2 style={{ textAlign: "center", fontWeight: "bold" }}>
+                Single Post
+            </h2>
+            <div
+                onClick={closeSinglePostDialog}
+                style={{ color: "blue", textAlign: "right" }}
+            >
+                Close Dialog
+            </div>
+            <div>Title: {post.post.title}</div>
+            <div>Body: {post.post.body}</div>
+            {isLoading ? <div>Loading comments</div> : renderSinglePost()}
         </div>
     );
-}
+};
 
 export default SinglePost;

@@ -1,60 +1,70 @@
 import React, { createContext, useReducer } from "react";
-import { User, PostWithComment, Todos, Comment } from "../interfaces";
 
 interface AppState {
-    currentUser: User | null;
-    user_posts: { userId: number; posts: Array<PostWithComment> | null };
-    user_todos: { userId: number; todos: Array<Todos> | null };
+    users: User[] | null;
+    userPosts: { userId: number; posts: PostWithComment[] | null };
+    userTodos: { userId: number; todos: Todos[] | null };
 }
 
 type Action =
-    | { type: "SET_USER"; payload: User }
+    | { type: ActionType.SET_USERS; payload: User[] }
     | {
-          type: "SET_POSTS";
-          payload: { userId: number; posts: Array<PostWithComment> };
+          type: ActionType.SET_POSTS;
+          payload: { userId: number; posts: Post[] };
       }
     | {
-          type: "SET_TODOS";
-          payload: { userId: number; todos: Array<Todos> };
+          type: ActionType.SET_TODOS;
+          payload: { userId: number; todos: Todos[] };
       }
     | {
-          type: "SET_COMMENT_FOR_POST";
-          payload: { postIndex: number; comments: Array<Comment> };
+          type: ActionType.SET_COMMENT_FOR_POST;
+          payload: { postIndex: number; comments: Comment[] };
       }
-    | { type: "SET_CURRENT_USER_ID"; payload: number };
+    | { type: ActionType.SET_CURRENT_USER_ID; payload: number };
 
 interface UserContentProviderProps {
     children: React.ReactNode;
 }
 
 const initialState: AppState = {
-    currentUser: null,
-    user_posts: { userId: -Infinity, posts: null },
-    user_todos: { userId: -Infinity, todos: null },
+    users: null,
+    userPosts: { userId: -Infinity, posts: null },
+    userTodos: { userId: -Infinity, todos: null },
 };
 
 const reducer = (state: AppState, action: Action) => {
     switch (action.type) {
-        case "SET_POSTS":
+        case ActionType.SET_POSTS:
+            let postsWithoutComments: Post[] = action.payload.posts;
+            let postsWithComments: PostWithComment[] = [];
+            postsWithoutComments.forEach((val: Post) => {
+                postsWithComments.push({
+                    post: val,
+                    comments: null,
+                });
+            });
             return {
                 ...state,
-                user_posts: action.payload,
+                userPosts: {
+                    userId: action.payload.userId,
+                    posts: postsWithComments,
+                },
             };
-        case "SET_TODOS":
+        case ActionType.SET_TODOS:
             return {
                 ...state,
-                user_todos: action.payload,
+                userTodos: action.payload,
             };
-        case "SET_USER":
+        case ActionType.SET_USERS:
+            console.log("roarie", action.payload);
             return {
                 ...state,
-                currentUser: action.payload,
+                users: action.payload,
             };
-        case "SET_COMMENT_FOR_POST":
+        case ActionType.SET_COMMENT_FOR_POST:
             const newState = { ...state };
-            if (newState.user_posts.posts !== null) {
-                // console.log(state.user_posts.posts[action.payload.postIndex])
-                newState.user_posts.posts[action.payload.postIndex].comments =
+            if (newState.userPosts.posts !== null) {
+                newState.userPosts.posts[action.payload.postIndex].comments =
                     action.payload.comments;
             }
             return newState;
