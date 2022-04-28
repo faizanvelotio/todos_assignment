@@ -11,41 +11,25 @@ import Layout from "./Layout";
 import "src/App.css";
 
 function App() {
-    return (
-        <div className="App">
-            <Switch>
-                <Route
-                    exact
-                    path="/"
-                    render={(routeProps) => (
-                        <Layout
-                            header={true}
-                            component={Home}
-                            {...routeProps}
-                        />
-                    )}
-                />
-                <Route exact path="/users" children={<Users />} />
-                <Route exact path="/users/:id/posts" children={<UserPosts />} />
-                <Route exact path="/users/:id/todos" children={<UserTodos />} />
-                <Route
-                    exact
-                    path="/users/:id"
-                    children={<UserForm edit={true} />}
-                />
-                <Route
-                    exact
-                    path="/createuser"
-                    children={<UserForm edit={false} />}
-                />
-                <Route
-                    exact
-                    path="/users/:id/new_post"
-                    children={<PostForm />}
-                />
-            </Switch>
-        </div>
-    );
+  return (
+    <div className="App">
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={(routeProps) => (
+            <Layout header={true} component={Home} {...routeProps} />
+          )}
+        />
+        <Route exact path="/users" children={<Users />} />
+        <Route exact path="/users/:id/posts" children={<UserPosts />} />
+        <Route exact path="/users/:id/todos" children={<UserTodos />} />
+        <Route exact path="/users/:id" children={<UserForm edit={true} />} />
+        <Route exact path="/createuser" children={<UserForm edit={false} />} />
+        <Route exact path="/users/:id/new_post" children={<PostForm />} />
+      </Switch>
+    </div>
+  );
 }
 
 export default App;

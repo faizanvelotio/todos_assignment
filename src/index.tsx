@@ -6,12 +6,12 @@ import { UserContentProvider } from "src/context/UserContentContext";
 import App from "src/App";
 
 const root = ReactDOM.createRoot(
-    document.getElementById("root") as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
-    <BrowserRouter>
-        <UserContentProvider>
-            <App />
-        </UserContentProvider>
-    </BrowserRouter>
+  <BrowserRouter>
+    <UserContentProvider>
+      <App />
+    </UserContentProvider>
+  </BrowserRouter>
 );
