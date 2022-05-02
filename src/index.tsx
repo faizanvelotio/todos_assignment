@@ -4,14 +4,20 @@ import { BrowserRouter } from "react-router-dom";
 
 import { UserContentProvider } from "src/context/UserContentContext";
 import App from "src/App";
+import theme from "src/mui/theme";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <BrowserRouter>
-    <UserContentProvider>
-      <App />
-    </UserContentProvider>
+    <ThemeProvider theme={theme}>
+      <UserContentProvider>
+        <CssBaseline>
+          <App />
+        </CssBaseline>
+      </UserContentProvider>
+    </ThemeProvider>
   </BrowserRouter>
 );
