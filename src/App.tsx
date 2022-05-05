@@ -6,7 +6,7 @@ import Home from "src/pages/Home";
 import UserTodos from "src/pages/Todos";
 import UserForm from "src/pages/UserForm";
 import PostForm from "src/pages/PostForm";
-import Layout from "./Layout";
+import Layout from "src/Layout";
 
 import "src/App.css";
 
