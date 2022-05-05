@@ -1,11 +1,14 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { AxiosResponse } from "axios";
+import { Box, Grid, Typography, CircularProgress } from "@mui/material";
+
 import { getUsers } from "src/api/User";
 import { UserContentContext } from "src/context/UserContentContext";
 import { ActionType } from "src/ActionTypes";
-import { AxiosResponse } from "axios";
+import UserCard from "src/components/UserCard";
+import AddUser from "src/components/AddUser";
+
 function Users() {
-  const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
 
   const { state, dispatch } = useContext(UserContentContext);
@@ -21,13 +24,6 @@ function Users() {
     }
   }, [dispatch]);
 
-  const handleUserClick = useCallback(
-    (userId: number) => {
-      history.push(`users/${userId}/posts`);
-    },
-    [history]
-  );
-
   useEffect(() => {
     if (users === null) {
       fetchUsers();
@@ -38,32 +34,42 @@ function Users() {
 
   const renderUsers = useCallback(
     () =>
-      users
-        ? users.map((user: User) => (
-            <div
-              key={user.id}
-              style={{
-                height: "24px",
-                margin: "10px",
-                padding: "10px",
-                cursor: "pointer",
-                border: "1px solid black",
-              }}
-              onClick={() => handleUserClick(user.id)}
-            >
-              {user.name}
-            </div>
-          ))
-        : null,
-    [users, handleUserClick]
+      users && (
+        <Grid container spacing={{ xs: 4, md: 3, xl: 5 }}>
+          {users.map((user: User) => (
+            <Grid key={user.id} item xs={12} sm={6} md={4} lg={3}>
+              <UserCard user={user} />
+            </Grid>
+          ))}
+          <Grid item xs={12} sm={6} md={4} lg={3}>
+            <AddUser />
+          </Grid>
+        </Grid>
+      ),
+    [users]
   );
 
   return (
-    <div>
-      {isLoading && <div>Loading...</div>}
-      {users && <h1 style={{ textAlign: "center" }}>Users</h1>}
-      {renderUsers()}
-    </div>
+    <Box
+      sx={{
+        padding: "1rem 2.5%",
+        display: "flex",
+        color: "#393D46",
+        flexDirection: "column",
+      }}
+    >
+      <Typography
+        variant="mainPageHeading"
+        sx={{ marginLeft: "auto", marginRight: "auto" }}
+      >
+        Users
+      </Typography>
+      <Box
+        sx={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}
+      >
+        {isLoading ? <CircularProgress /> : renderUsers()}
+      </Box>
+    </Box>
   );
 }
 

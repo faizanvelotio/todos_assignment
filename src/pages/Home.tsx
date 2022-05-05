@@ -21,6 +21,7 @@ function Home() {
             height: "85vh",
             alignItems: "center",
           },
+          color: "#393D46",
         }}
       >
         <Grid
