@@ -1,17 +1,17 @@
-import React from "react";
+import React, { ReactNode } from "react";
+import { Route, RouteProps } from "react-router-dom";
 import Navbar from "src/components/Navbar";
 
-interface LayoutProps {
+interface LayoutProps extends RouteProps {
   header?: boolean;
-  component: React.FC;
+  render: () => ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ header, component, ...rest }) => {
-  const Component: React.FC = component;
+const Layout: React.FC<LayoutProps> = ({ header, render, ...routeProps }) => {
   return (
     <div className="main-container">
       {header && <Navbar />}
-      <Component />
+      <Route render={render} {...routeProps} />
     </div>
   );
 };

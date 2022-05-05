@@ -1,4 +1,4 @@
-import { Route, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
 
 import Users from "src/pages/Users";
 import UserPosts from "src/pages/Posts";
@@ -14,19 +14,38 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        <Route
+        <Layout header={true} render={() => <Home />} exact path="/" />
+        <Layout header={true} render={() => <Users />} exact path="/users" />
+        <Layout
+          header={true}
+          render={() => <UserPosts />}
           exact
-          path="/"
-          render={(routeProps) => (
-            <Layout header={true} component={Home} {...routeProps} />
-          )}
+          path="/users/:id/posts"
         />
-        <Route exact path="/users" children={<Users />} />
-        <Route exact path="/users/:id/posts" children={<UserPosts />} />
-        <Route exact path="/users/:id/todos" children={<UserTodos />} />
-        <Route exact path="/users/:id" children={<UserForm edit={true} />} />
-        <Route exact path="/createuser" children={<UserForm edit={false} />} />
-        <Route exact path="/users/:id/new_post" children={<PostForm />} />
+        <Layout
+          header={true}
+          render={() => <UserTodos />}
+          exact
+          path="/users/:id/todos"
+        />
+        <Layout
+          header={true}
+          render={() => <UserForm edit={false} />}
+          exact
+          path="/users/:id"
+        />
+        <Layout
+          header={true}
+          render={() => <UserForm edit={true} />}
+          exact
+          path="/createuser"
+        />
+        <Layout
+          header={true}
+          render={() => <PostForm />}
+          exact
+          path="/users/:id/new_post"
+        />
       </Switch>
     </div>
   );

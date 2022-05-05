@@ -57,7 +57,6 @@ const reducer = (state: AppState, action: Action) => {
         userTodos: action.payload,
       };
     case ActionType.SET_USERS:
-      console.log("roarie", action.payload);
       return {
         ...state,
         users: action.payload,
