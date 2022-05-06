@@ -3,7 +3,12 @@ import { ActionType } from "src/ActionTypes";
 
 interface AppState {
   users: User[] | null;
-  userPosts: { userId: number; posts: PostWithComment[] | null };
+  userPosts: {
+    userId: number;
+    posts: PostWithComment[];
+    page: number;
+    complete: boolean;
+  };
   userTodos: { userId: number; todos: Todos[] | null };
 }
 
@@ -11,7 +16,7 @@ type Action =
   | { type: ActionType.SET_USERS; payload: User[] }
   | {
       type: ActionType.SET_POSTS;
-      payload: { userId: number; posts: Post[] };
+      payload: { userId: number; posts: Post[]; pageNumber: number };
     }
   | {
       type: ActionType.SET_TODOS;
@@ -29,28 +34,49 @@ interface UserContentProviderProps {
 
 const initialState: AppState = {
   users: null,
-  userPosts: { userId: -Infinity, posts: null },
+  userPosts: { userId: -Infinity, posts: [], complete: false, page: 1 },
   userTodos: { userId: -Infinity, todos: null },
 };
 
 const reducer = (state: AppState, action: Action) => {
   switch (action.type) {
     case ActionType.SET_POSTS:
-      let postsWithoutComments: Post[] = action.payload.posts;
-      let postsWithComments: PostWithComment[] = [];
-      postsWithoutComments.forEach((val: Post) => {
-        postsWithComments.push({
-          post: val,
-          comments: null,
+      // If all the data has been loaded, then update
+      // complete to true
+      if (!action.payload.posts.length) {
+        const newState = { ...state };
+        newState.userPosts.userId = action.payload.userId;
+        newState.userPosts.complete = true;
+        newState.userPosts.page = action.payload.pageNumber;
+        if (action.payload.userId !== state.userPosts.userId) {
+          newState.userPosts.posts = [];
+        }
+        return newState;
+      } else {
+        const newState = { ...state };
+        let postsWithoutComments: Post[] = action.payload.posts;
+        let postsWithComments: PostWithComment[] = [];
+        postsWithoutComments.forEach((val: Post) => {
+          postsWithComments.push({
+            post: val,
+            comments: null,
+          });
         });
-      });
-      return {
-        ...state,
-        userPosts: {
-          userId: action.payload.userId,
-          posts: postsWithComments,
-        },
-      };
+
+        if (action.payload.userId !== state.userPosts.userId) {
+          newState.userPosts.posts = postsWithComments;
+        } else {
+          newState.userPosts.posts = [
+            ...state.userPosts.posts,
+            ...postsWithComments,
+          ];
+        }
+        newState.userPosts.userId = action.payload.userId;
+        newState.userPosts.page = action.payload.pageNumber;
+        newState.userPosts.complete = false;
+        return newState;
+      }
+
     case ActionType.SET_TODOS:
       return {
         ...state,

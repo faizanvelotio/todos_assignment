@@ -27,7 +27,7 @@ interface Company {
 }
 
 declare interface Post {
-  userid: number;
+  userId: number;
   id: number;
   title: string;
   body: string;

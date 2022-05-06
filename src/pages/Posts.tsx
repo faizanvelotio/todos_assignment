@@ -1,21 +1,22 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
+import { AxiosResponse } from "axios";
+import { useInView } from "react-intersection-observer";
+import { Box, CircularProgress, Grid, IconButton } from "@mui/material";
 
 import useLocationId from "src/utils/useLocationId";
 import SinglePost from "src/pages/SinglePost";
 import { UserContentContext } from "src/context/UserContentContext";
 import { getUserPosts } from "src/api/Post";
 import { ActionType } from "src/ActionTypes";
-import { AxiosResponse } from "axios";
-import { Box, Grid, IconButton } from "@mui/material";
 import TabButton from "src/components/TabButton";
 
 const initialViewablePost: ViewPost = {
   view: false,
   post: {
     post: {
-      userid: 0,
+      userId: 0,
       title: "",
       body: "",
       id: 0,
@@ -27,13 +28,18 @@ const initialViewablePost: ViewPost = {
 
 const Posts: React.FC = () => {
   const userId: number = useLocationId(); // Get the id parameter for URL
-  const [isLoading, setIsLoading] = useState(true); // If the posts are loading or not
-  const [viewablePost, setViewablePost] =
-    useState<ViewPost>(initialViewablePost);
-
   const history = useHistory();
   const { state, dispatch } = useContext(UserContentContext);
   const { userPosts } = state;
+
+  const [viewablePost, setViewablePost] =
+    useState<ViewPost>(initialViewablePost);
+
+  // For intersection observer
+  const [pageNumber, setPageNumber] = useState<number>(
+    userId !== userPosts.userId ? 1 : userPosts.page
+  );
+  const { ref, inView } = useInView({ threshold: 1 });
 
   const handlePostClick = useCallback((post: PostWithComment, idx: number) => {
     setViewablePost({
@@ -49,31 +55,43 @@ const Posts: React.FC = () => {
   );
 
   const fetchUserPosts = useCallback(
-    async (userId: number) => {
+    async (userId: number, pageNumber: number) => {
       try {
-        const response: AxiosResponse<Post[]> = await getUserPosts(userId);
+        const response: AxiosResponse<Post[]> = await getUserPosts(
+          userId,
+          pageNumber,
+          3
+        );
         dispatch({
           type: ActionType.SET_POSTS,
-          payload: { userId: userId, posts: response.data },
+          payload: {
+            userId: userId,
+            posts: response.data,
+            pageNumber: pageNumber + 1,
+          },
         });
       } catch (e) {
         // Showing the error using toast
-      } finally {
-        setIsLoading(false);
       }
     },
     [dispatch]
   );
 
   useEffect(() => {
-    // If the posts in the state is of different user, then update the state,
-    // else render with the same data in the state
-    if (userId !== userPosts.userId) {
-      fetchUserPosts(userId);
-    } else {
-      setIsLoading(false);
+    // When the element is in view, update the page number and
+    // fetch new elements
+    if (inView && !userPosts.complete) {
+      setPageNumber((prev) => prev + 1);
     }
-  }, [userId, userPosts, fetchUserPosts]);
+  }, [inView, userPosts]);
+
+  useEffect(() => {
+    // Fetch the userposts if a new user is there or still some update
+    // page number is to be loaded
+    if (!(userId === userPosts.userId && userPosts.complete)) {
+      fetchUserPosts(userId, pageNumber);
+    }
+  }, [userId, userPosts, fetchUserPosts, pageNumber]);
 
   const renderPosts = useCallback(
     () => (
@@ -84,6 +102,7 @@ const Posts: React.FC = () => {
             <div
               key={postWithComment.post.id}
               onClick={() => handlePostClick(postWithComment, idx)}
+              ref={userPosts.posts.length === idx + 1 ? ref : null}
               style={{
                 minHeight: "30px",
                 margin: "20px",
@@ -95,12 +114,20 @@ const Posts: React.FC = () => {
               Title: {postWithComment.post.title}
               <br />
               <br />
+              <div>
+                {postWithComment.post.userId + " " + postWithComment.post.id}
+              </div>
               Body: {postWithComment.post.body}
             </div>
           ))}
+        {!userPosts.complete && (
+          <Box sx={{ margin: "1rem auto" }}>
+            <CircularProgress />
+          </Box>
+        )}
       </>
     ),
-    [userPosts, handlePostClick]
+    [userPosts, ref, handlePostClick]
   );
 
   return (
@@ -140,7 +167,7 @@ const Posts: React.FC = () => {
           index={viewablePost.index}
         />
       )}
-      {isLoading ? <div>Loading...</div> : renderPosts()}
+      {renderPosts()}
     </Box>
   );
 };
