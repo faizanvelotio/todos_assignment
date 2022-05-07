@@ -5,11 +5,11 @@ import { AxiosResponse } from "axios";
 import { useInView } from "react-intersection-observer";
 import { Box, CircularProgress, Grid, IconButton } from "@mui/material";
 
-import useLocationId from "src/utils/useLocationId";
+import getLocationId from "src/utils/getLocationId";
 import SinglePost from "src/pages/SinglePost";
 import { UserContentContext } from "src/context/UserContentContext";
 import { getUserPosts } from "src/api/Post";
-import { ActionType } from "src/ActionTypes";
+import { ActionType } from "src/types/ActionTypes";
 import TabButton from "src/components/TabButton";
 
 const initialViewablePost: ViewPost = {
@@ -27,7 +27,7 @@ const initialViewablePost: ViewPost = {
 };
 
 const Posts: React.FC = () => {
-  const userId: number = useLocationId(); // Get the id parameter for URL
+  const userId: number = getLocationId(); // Get the id parameter for URL
   const history = useHistory();
   const { state, dispatch } = useContext(UserContentContext);
   const { userPosts } = state;

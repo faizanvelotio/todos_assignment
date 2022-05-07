@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material/styles";
-import AlegreyaMedium from "src/static/fonts/Alegreya-Medium.ttf";
-import OpenSans from "src/static/fonts/OpenSans-Regular.ttf";
+import AlegreyaMedium from "src/assets/fonts/Alegreya-Medium.ttf";
+import OpenSans from "src/assets/fonts/OpenSans-Regular.ttf";
 
 declare module "@mui/material/styles" {
   interface TypographyVariants {

@@ -1,7 +1,7 @@
 import { UserContentContext } from "src/context/UserContentContext";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { getPostComments } from "src/api/Post";
-import { ActionType } from "src/ActionTypes";
+import { ActionType } from "src/types/ActionTypes";
 import { AxiosResponse } from "axios";
 interface SinglePostProps {
   post: PostWithComment;

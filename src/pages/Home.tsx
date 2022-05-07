@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
-import theme from "src/mui/theme";
-import HomePageImage from "src/static/images/home_page_img.jpg";
+import theme from "src/assets/theme/theme";
+import HomePageImage from "src/assets/images/home_page_img.jpg";
 
 function Home() {
   const history = useHistory();

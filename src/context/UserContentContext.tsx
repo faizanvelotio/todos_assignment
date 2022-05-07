@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from "react";
-import { ActionType } from "src/ActionTypes";
+import { ActionType } from "src/types/ActionTypes";
 
 interface AppState {
   users: User[] | null;

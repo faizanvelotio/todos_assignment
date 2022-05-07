@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserContentContext } from "src/context/UserContentContext";
-import useLocationId from "src/utils/useLocationId";
+import getLocationId from "src/utils/getLocationId";
 import { getUserTodos } from "src/api/Todos";
-import { ActionType } from "src/ActionTypes";
+import { ActionType } from "src/types/ActionTypes";
 import { AxiosResponse } from "axios";
 
 const UserTodos: React.FC = () => {
-  const userId: number = useLocationId();
+  const userId: number = getLocationId();
   const [isLoading, setIsLoading] = useState(true);
 
   const { state, dispatch } = useContext(UserContentContext);

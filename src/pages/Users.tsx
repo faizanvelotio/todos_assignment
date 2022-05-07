@@ -4,7 +4,7 @@ import { Box, Grid, Typography, CircularProgress } from "@mui/material";
 
 import { getUsers } from "src/api/User";
 import { UserContentContext } from "src/context/UserContentContext";
-import { ActionType } from "src/ActionTypes";
+import { ActionType } from "src/types/ActionTypes";
 import UserCard from "src/components/UserCard";
 import AddUser from "src/components/AddUser";
 import DisplayError from "src/pages/DisplayError";
@@ -73,7 +73,7 @@ function Users() {
           </Typography>
           <Box
             sx={{
-              marginTop: "1rem",
+              marginTop: "2rem",
               display: "flex",
               justifyContent: "center",
             }}

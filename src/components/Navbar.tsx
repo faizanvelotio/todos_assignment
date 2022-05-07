@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import logo from "src/static/images/posts_and_todos_logo.png";
+import logo from "src/assets/images/posts_and_todos_logo.png";
 
 const Navbar = () => {
   const history = useHistory();
