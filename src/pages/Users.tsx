@@ -7,18 +7,21 @@ import { UserContentContext } from "src/context/UserContentContext";
 import { ActionType } from "src/ActionTypes";
 import UserCard from "src/components/UserCard";
 import AddUser from "src/components/AddUser";
+import DisplayError from "src/pages/DisplayError";
 
 function Users() {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const { state, dispatch } = useContext(UserContentContext);
   const { users } = state;
+
   const fetchUsers = useCallback(async () => {
     try {
       const response: AxiosResponse<User[]> = await getUsers();
       dispatch({ type: ActionType.SET_USERS, payload: response.data });
     } catch (e) {
-      // Toastify the error
+      setError(true);
     } finally {
       setIsLoading(false);
     }
@@ -58,17 +61,27 @@ function Users() {
         flexDirection: "column",
       }}
     >
-      <Typography
-        variant="mainPageHeading"
-        sx={{ marginLeft: "auto", marginRight: "auto" }}
-      >
-        Users
-      </Typography>
-      <Box
-        sx={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}
-      >
-        {isLoading ? <CircularProgress /> : renderUsers()}
-      </Box>
+      {error ? (
+        <DisplayError />
+      ) : (
+        <>
+          <Typography
+            variant="mainPageHeading"
+            sx={{ marginLeft: "auto", marginRight: "auto" }}
+          >
+            Users
+          </Typography>
+          <Box
+            sx={{
+              marginTop: "1rem",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {isLoading ? <CircularProgress /> : renderUsers()}
+          </Box>
+        </>
+      )}
     </Box>
   );
 }

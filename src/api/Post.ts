@@ -1,13 +1,20 @@
 import axios, { AxiosResponse } from "axios";
 
+interface PostsRequestConfig {
+  params: { _page: number; _limit: number };
+}
+
 export const getUserPosts = (
   userId: number,
   pageNumber: number,
   limit: number
-): Promise<AxiosResponse<Post[]>> =>
-  axios.get<Post[]>(`/users/${userId}/posts`, {
-    params: { _page: pageNumber, _limit: limit },
-  });
+): Promise<AxiosResponse<Post[], PostsRequestConfig>> =>
+  axios.get<Post[], AxiosResponse<Post[]>, PostsRequestConfig>(
+    `/users/${userId}/posts`,
+    {
+      params: { _page: pageNumber, _limit: limit },
+    }
+  );
 
 export const getPostComments = (
   postId: number

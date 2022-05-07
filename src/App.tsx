@@ -1,3 +1,4 @@
+import React from "react";
 import { Switch } from "react-router-dom";
 
 import Users from "src/pages/Users";
@@ -7,10 +8,9 @@ import UserTodos from "src/pages/Todos";
 import UserForm from "src/pages/UserForm";
 import PostForm from "src/pages/PostForm";
 import Layout from "src/components/Layout";
+import NotFound from "./pages/404";
 
-import "src/App.css";
-
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
       <Switch>
@@ -46,9 +46,10 @@ function App() {
           exact
           path="/users/:id/new_post"
         />
+        <Layout header={true} render={() => <NotFound />} path="*" />
       </Switch>
     </div>
   );
-}
+};
 
 export default App;
