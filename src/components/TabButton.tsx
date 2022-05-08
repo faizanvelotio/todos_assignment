@@ -5,13 +5,14 @@ import { useHistory } from "react-router-dom";
 interface TabButtonProps {
   active: boolean;
   text: string;
-  url?: string;
+  url: string;
 }
+
 const TabButton: React.FC<TabButtonProps> = ({ active, text, url }) => {
   const history = useHistory();
 
   const handleClick = useCallback(() => {
-    if (!active && url) {
+    if (!active) {
       history.push(url);
     }
   }, [active, history, url]);

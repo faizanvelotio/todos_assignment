@@ -66,7 +66,7 @@ function Users() {
       ) : (
         <>
           <Typography
-            variant="mainPageHeading"
+            variant="pageHeading"
             sx={{ marginLeft: "auto", marginRight: "auto" }}
           >
             Users

@@ -1,16 +1,16 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import AddIcon from "@mui/icons-material/Add";
 import { AxiosResponse } from "axios";
 import { useInView } from "react-intersection-observer";
-import { Box, CircularProgress, Grid, IconButton } from "@mui/material";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 
 import getLocationId from "src/utils/getLocationId";
 import SinglePost from "src/pages/SinglePost";
 import { UserContentContext } from "src/context/UserContentContext";
 import { getUserPosts } from "src/api/Post";
 import { ActionType } from "src/types/ActionTypes";
-import TabButton from "src/components/TabButton";
+import TabSwitch from "src/components/TabSwitch";
+import DisplayError from "src/pages/DisplayError";
+import PostCard from "src/components/PostCard";
 
 const initialViewablePost: ViewPost = {
   view: false,
@@ -27,19 +27,18 @@ const initialViewablePost: ViewPost = {
 };
 
 const Posts: React.FC = () => {
+  const [error, setError] = useState(false);
   const userId: number = getLocationId(); // Get the id parameter for URL
-  const history = useHistory();
   const { state, dispatch } = useContext(UserContentContext);
   const { userPosts } = state;
-
   const [viewablePost, setViewablePost] =
-    useState<ViewPost>(initialViewablePost);
+    useState<ViewPost>(initialViewablePost); // For displaying the selected post modal
 
   // For intersection observer
   const [pageNumber, setPageNumber] = useState<number>(
     userId !== userPosts.userId ? 1 : userPosts.page
   );
-  const { ref, inView } = useInView({ threshold: 1 });
+  const [inViewRef, inView] = useInView({ threshold: 1 });
 
   const handlePostClick = useCallback((post: PostWithComment, idx: number) => {
     setViewablePost({
@@ -48,11 +47,6 @@ const Posts: React.FC = () => {
       index: idx,
     });
   }, []);
-
-  const createPost = useCallback(
-    () => history.push(`/users/${userId}/new_post?edit=false`),
-    [history, userId]
-  );
 
   const fetchUserPosts = useCallback(
     async (userId: number, pageNumber: number) => {
@@ -71,23 +65,23 @@ const Posts: React.FC = () => {
           },
         });
       } catch (e) {
-        // Showing the error using toast
+        setError(true);
       }
     },
     [dispatch]
   );
 
+  // When the element is in view, update the page number and
+  // fetch new elements
   useEffect(() => {
-    // When the element is in view, update the page number and
-    // fetch new elements
     if (inView && !userPosts.complete) {
       setPageNumber((prev) => prev + 1);
     }
   }, [inView, userPosts]);
 
+  // Fetch the userposts if a new user is there or still some update
+  // page number is to be loaded
   useEffect(() => {
-    // Fetch the userposts if a new user is there or still some update
-    // page number is to be loaded
     if (!(userId === userPosts.userId && userPosts.complete)) {
       fetchUserPosts(userId, pageNumber);
     }
@@ -96,38 +90,46 @@ const Posts: React.FC = () => {
   const renderPosts = useCallback(
     () => (
       <>
-        <h1 style={{ textAlign: "center" }}>Posts</h1>
-        {userPosts.posts &&
-          userPosts.posts.map((postWithComment: PostWithComment, idx) => (
-            <div
-              key={postWithComment.post.id}
-              onClick={() => handlePostClick(postWithComment, idx)}
-              ref={userPosts.posts.length === idx + 1 ? ref : null}
-              style={{
-                minHeight: "30px",
-                margin: "20px",
-                padding: "30px",
-                cursor: "pointer",
-                border: "1px solid black",
+        <Typography
+          variant="pageHeading"
+          sx={{ marginLeft: "auto", marginRight: "auto" }}
+        >
+          Posts
+        </Typography>
+        <Stack
+          sx={{
+            marginTop: "2rem",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+          spacing={5}
+        >
+          {userPosts.posts &&
+            userPosts.posts.map((postWithComment: PostWithComment, idx) => (
+              <Box
+                ref={userPosts.posts.length === idx + 1 ? inViewRef : null}
+                key={postWithComment.post.id}
+                onClick={() => handlePostClick(postWithComment, idx)}
+              >
+                <PostCard post={postWithComment} />
+              </Box>
+            ))}
+          {!userPosts.complete && (
+            <Box
+              sx={{
+                display: "flex",
+                margin: "2rem 0",
+                justifyContent: "center",
               }}
             >
-              Title: {postWithComment.post.title}
-              <br />
-              <br />
-              <div>
-                {postWithComment.post.userId + " " + postWithComment.post.id}
-              </div>
-              Body: {postWithComment.post.body}
-            </div>
-          ))}
-        {!userPosts.complete && (
-          <Box sx={{ margin: "1rem auto" }}>
-            <CircularProgress />
-          </Box>
-        )}
+              <CircularProgress />
+            </Box>
+          )}
+        </Stack>
       </>
     ),
-    [userPosts, ref, handlePostClick]
+    [userPosts, inViewRef, handlePostClick]
   );
 
   return (
@@ -139,27 +141,6 @@ const Posts: React.FC = () => {
         flexDirection: "column",
       }}
     >
-      <Grid container spacing={1}>
-        <Grid item xs={4} md={3} lg={2}>
-          <TabButton active={true} text="Posts" />
-        </Grid>
-        <Grid item xs={4} md={3} lg={2}>
-          <TabButton
-            active={false}
-            text="Todos"
-            url={`/users/${userId}/todos`}
-          />
-        </Grid>
-        <IconButton
-          sx={{
-            marginLeft: "auto",
-          }}
-          onClick={createPost}
-        >
-          <AddIcon sx={{ fontSize: 50, color: "primary.main" }} />
-        </IconButton>
-      </Grid>
-
       {viewablePost.view && (
         <SinglePost
           post={viewablePost.post}
@@ -167,7 +148,8 @@ const Posts: React.FC = () => {
           index={viewablePost.index}
         />
       )}
-      {renderPosts()}
+      <TabSwitch userId={userId} currentActive={"posts"} />
+      {error ? <DisplayError /> : renderPosts()}
     </Box>
   );
 };

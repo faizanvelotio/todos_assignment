@@ -8,7 +8,7 @@ import UserTodos from "src/pages/Todos";
 import UserForm from "src/pages/UserForm";
 import PostForm from "src/pages/PostForm";
 import Layout from "src/components/Layout";
-import NotFound from "./pages/404";
+import NotFound from "src/pages/404";
 
 const App: React.FC = () => {
   return (

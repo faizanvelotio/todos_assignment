@@ -15,7 +15,7 @@ const NotFound: React.FC = () => {
         alignItems: "center",
       }}
     >
-      <Typography variant="mainPageHeading">404 - Page Not Found</Typography>
+      <Typography variant="pageHeading">404 - Page Not Found</Typography>
       <Button
         variant="contained"
         sx={{

@@ -43,9 +43,7 @@ function Home() {
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <Typography variant="mainPageHeading">
-                Posts and Todos.
-              </Typography>
+              <Typography variant="pageHeading">Posts and Todos.</Typography>
               <Typography variant="body1">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut

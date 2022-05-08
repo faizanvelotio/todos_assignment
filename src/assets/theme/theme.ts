@@ -1,26 +1,27 @@
 import { createTheme } from "@mui/material/styles";
 import AlegreyaMedium from "src/assets/fonts/Alegreya-Medium.ttf";
 import OpenSans from "src/assets/fonts/OpenSans-Regular.ttf";
+import OpenSansCondensed from "src/assets/fonts/OpenSans_Condensed-SemiBold.ttf";
 
 declare module "@mui/material/styles" {
   interface TypographyVariants {
-    alegreya: React.CSSProperties;
-    mainPageHeading: React.CSSProperties;
+    postHeading: React.CSSProperties;
+    pageHeading: React.CSSProperties;
     mainPageBody: React.CSSProperties;
   }
 
   // allow configuration using `createTheme`
   interface TypographyVariantsOptions {
-    alegreya?: React.CSSProperties;
-    mainPageHeading?: React.CSSProperties;
+    postHeading?: React.CSSProperties;
+    pageHeading?: React.CSSProperties;
     mainPageBody?: React.CSSProperties;
   }
 }
 
 declare module "@mui/material/Typography" {
   interface TypographyPropsVariantOverrides {
-    alegreya: true;
-    mainPageHeading: true;
+    postHeading: true;
+    pageHeading: true;
     mainPageBody: React.CSSProperties;
   }
 }
@@ -48,10 +49,6 @@ const theme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(","),
-    alegreya: {
-      fontFamily: "Alegreya, Arial, serif",
-      fontSize: 14,
-    },
   },
   components: {
     MuiCssBaseline: {
@@ -69,14 +66,22 @@ const theme = createTheme({
           font-style: normal;
           font-display: swap;
           font-weight: 400;
-          src: local('Water Brush'), local('WaterBrush-Regular'), url(${OpenSans}) format('truetype');
-        }        
+          src: local('Open Sans'), local('OpenSans-Regular'), url(${OpenSans}) format('truetype');
+        }
+        
+        @font-face {
+          font-family: 'Open Sans Condensed';
+          font-style: normal;
+          font-display: swap;
+          font-weight: 600;
+          src: local('OpenSansCondensed'), local('OpenSans_Condensed-SemiBold'), url(${OpenSansCondensed}) format('truetype');
+        }
       `,
     },
   },
 });
 
-theme.typography.mainPageHeading = {
+theme.typography.pageHeading = {
   fontFamily: "Alegreya, Arial, serif",
   [theme.breakpoints.up("lg")]: {
     fontSize: "4.5rem",
@@ -89,6 +94,22 @@ theme.typography.mainPageHeading = {
   [theme.breakpoints.between("xs", "md")]: {
     fontSize: "2.5rem",
     lineHeight: "2.2rem",
+  },
+};
+
+theme.typography.postHeading = {
+  fontFamily: "'Open Sans Condensed', sans-serif",
+  [theme.breakpoints.up("lg")]: {
+    fontSize: "3.5rem",
+    lineHeight: "4rem",
+  },
+  [theme.breakpoints.between("md", "lg")]: {
+    fontSize: "2.5rem",
+    lineHeight: "3rem",
+  },
+  [theme.breakpoints.between("xs", "md")]: {
+    fontSize: "2rem",
+    lineHeight: "2.5rem",
   },
 };
 
