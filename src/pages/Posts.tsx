@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 
 import getLocationId from "src/utils/getLocationId";
-import SinglePost from "src/components/SinglePost";
+import Post from "src/components/Post";
 import { UserContentContext } from "src/context/UserContentContext";
 import { getUserPosts } from "src/api/Post";
 import { ActionType } from "src/types/ActionTypes";
@@ -43,7 +43,7 @@ const Posts: React.FC = () => {
   );
   const [inViewRef, inView] = useInView({ threshold: 1 });
 
-  const openSinglePost = useCallback((post: PostWithComment, idx: number) => {
+  const openPost = useCallback((post: PostWithComment, idx: number) => {
     setViewablePost({
       post: post,
       index: idx,
@@ -114,16 +114,18 @@ const Posts: React.FC = () => {
           spacing={5}
         >
           {userPosts.posts &&
-            userPosts.posts.map((postWithComment: PostWithComment, idx) => (
-              <Box
-                ref={userPosts.posts.length === idx + 1 ? inViewRef : null}
-                key={postWithComment.post.id}
-                onClick={() => openSinglePost(postWithComment, idx)}
-                sx={{ maxWidth: "1200px" }}
-              >
-                <PostCard post={postWithComment} />
-              </Box>
-            ))}
+            userPosts.posts.map(
+              (postWithComment: PostWithComment, idx: number) => (
+                <Box
+                  ref={userPosts.posts.length === idx + 1 ? inViewRef : null}
+                  key={postWithComment.post.id}
+                  onClick={() => openPost(postWithComment, idx)}
+                  sx={{ maxWidth: "1200px" }}
+                >
+                  <PostCard post={postWithComment} />
+                </Box>
+              )
+            )}
           {!userPosts.complete && (
             <Box
               sx={{
@@ -138,7 +140,7 @@ const Posts: React.FC = () => {
         </Stack>
       </>
     ),
-    [userPosts, inViewRef, openSinglePost]
+    [userPosts, inViewRef, openPost]
   );
 
   return (
@@ -153,7 +155,7 @@ const Posts: React.FC = () => {
         <TabSwitch userId={userId} currentActive={"posts"} />
         {error ? <DisplayError /> : renderPosts()}
       </Box>
-      <SinglePost
+      <Post
         open={open}
         handleClose={handleClose}
         post={viewablePost.post}

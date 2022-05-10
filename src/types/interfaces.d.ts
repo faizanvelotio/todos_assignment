@@ -36,7 +36,6 @@ declare interface Post {
 declare interface Todos {
   userid: number;
   id: number;
-  q;
   title: string;
   completed: boolean;
 }

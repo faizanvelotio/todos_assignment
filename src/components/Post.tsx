@@ -19,19 +19,14 @@ import { ActionType } from "src/types/ActionTypes";
 import { UserContentContext } from "src/context/UserContentContext";
 import CommentCard from "src/components/CommentCard";
 
-interface SinglePostProps {
+interface PostProps {
   open: boolean;
   post: PostWithComment;
   index: number;
   handleClose: () => void;
 }
 
-const SinglePost: React.FC<SinglePostProps> = ({
-  post,
-  index,
-  open,
-  handleClose,
-}) => {
+const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
   const { dispatch } = useContext(UserContentContext);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -60,7 +55,7 @@ const SinglePost: React.FC<SinglePostProps> = ({
     }
   }, [post, index, fetchPostComments]);
 
-  const renderSinglePost = useCallback(
+  const renderPost = useCallback(
     () => (
       <Dialog
         fullWidth={true}
@@ -139,7 +134,7 @@ const SinglePost: React.FC<SinglePostProps> = ({
     [open, post, error, fullScreen, handleClose]
   );
 
-  return renderSinglePost();
+  return renderPost();
 };
 
-export default SinglePost;
+export default Post;

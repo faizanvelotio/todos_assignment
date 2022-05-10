@@ -10,7 +10,12 @@ interface AppState {
     page: number;
     complete: boolean;
   };
-  userTodos: { userId: number; todos: Todos[] | null };
+  userTodos: {
+    userId: number;
+    todos: Todos[];
+    page: number;
+    complete: boolean;
+  };
 }
 
 type Action =
@@ -21,13 +26,17 @@ type Action =
     }
   | {
       type: ActionType.SET_TODOS;
-      payload: { userId: number; todos: Todos[] };
+      payload: { userId: number; todos: Todos[]; pageNumber: number };
     }
   | {
       type: ActionType.SET_COMMENT_FOR_POST;
       payload: { postIndex: number; comments: Comment[] };
     }
-  | { type: ActionType.SET_CURRENT_USER; payload: User };
+  | { type: ActionType.SET_CURRENT_USER; payload: User }
+  | {
+      type: ActionType.TOGGLE_TODO;
+      payload: { idx: number; completed: boolean };
+    };
 
 interface UserContentProviderProps {
   children: React.ReactNode;
@@ -36,7 +45,7 @@ interface UserContentProviderProps {
 const initialState: AppState = {
   users: null,
   userPosts: { userId: -Infinity, posts: [], complete: false, page: 1 },
-  userTodos: { userId: -Infinity, todos: null },
+  userTodos: { userId: -Infinity, todos: [], complete: false, page: 1 },
   currentUser: { id: -Infinity, name: "", username: "", email: "" },
 };
 
@@ -80,10 +89,35 @@ const reducer = (state: AppState, action: Action) => {
       }
 
     case ActionType.SET_TODOS:
-      return {
-        ...state,
-        userTodos: action.payload,
-      };
+      // If all the data has been loaded, then update
+      // complete to true
+      if (!action.payload.todos.length) {
+        return {
+          ...state,
+          userTodos: {
+            userId: action.payload.userId,
+            page: action.payload.pageNumber,
+            complete: true,
+            todos:
+              action.payload.userId !== state.userTodos.userId
+                ? []
+                : state.userTodos.todos,
+          },
+        };
+      } else {
+        return {
+          ...state,
+          userTodos: {
+            userId: action.payload.userId,
+            page: action.payload.pageNumber,
+            complete: false,
+            todos:
+              action.payload.userId !== state.userTodos.userId
+                ? action.payload.todos
+                : [...state.userTodos.todos, ...action.payload.todos],
+          },
+        };
+      }
     case ActionType.SET_USERS:
       return {
         ...state,
@@ -101,6 +135,12 @@ const reducer = (state: AppState, action: Action) => {
           action.payload.comments;
       }
       return newState;
+    case ActionType.TOGGLE_TODO:
+      const newState1 = { ...state };
+      newState1.userTodos.todos = [...state.userTodos.todos];
+      newState1.userTodos.todos[action.payload.idx].completed =
+        action.payload.completed;
+      return newState1;
     default:
       return state;
   }

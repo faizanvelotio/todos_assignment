@@ -1,81 +1,134 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { AxiosResponse } from "axios";
+import { useTheme } from "@mui/material/styles";
+import { useInView } from "react-intersection-observer";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+
 import { UserContentContext } from "src/context/UserContentContext";
 import getLocationId from "src/utils/getLocationId";
 import { getUserTodos } from "src/api/Todos";
 import { ActionType } from "src/types/ActionTypes";
-import { AxiosResponse } from "axios";
+import TabSwitch from "src/components/TabSwitch";
+import DisplayError from "src/pages/DisplayError";
+import Todo from "src/components/Todo";
 
 const UserTodos: React.FC = () => {
+  const [error, setError] = useState(false);
+  const theme = useTheme();
   const userId: number = getLocationId();
-  const [isLoading, setIsLoading] = useState(true);
-
   const { state, dispatch } = useContext(UserContentContext);
   const { userTodos } = state;
 
+  const moreTodos: boolean = !(
+    userId === userTodos.userId && userTodos.complete
+  );
+
+  // For intersection observer
+  const [pageNumber, setPageNumber] = useState<number>(
+    userId !== userTodos.userId ? 1 : userTodos.page
+  );
+  const [inViewRef, inView] = useInView({ threshold: 1 });
+
   const fetchUserTodos = useCallback(
-    async (userId: number) => {
+    async (userId: number, pageNumber: number) => {
       try {
-        const response: AxiosResponse<Todos[]> = await getUserTodos(userId);
+        const response: AxiosResponse<Todos[]> = await getUserTodos(
+          userId,
+          pageNumber,
+          5
+        );
         dispatch({
           type: ActionType.SET_TODOS,
-          payload: { userId: userId, todos: response.data },
+          payload: {
+            userId: userId,
+            todos: response.data,
+            pageNumber: pageNumber + 1,
+          },
         });
       } catch (e) {
-        // Showing the error using toast
-      } finally {
-        setIsLoading(false);
+        setError(true);
       }
     },
     [dispatch]
   );
 
+  // When the element is in view, update the page number and
+  // fetch new elements
   useEffect(() => {
-    // If the posts in the state is of different user, then update the state,
-    // else update render with the same state
-    if (userId !== userTodos.userId) {
-      fetchUserTodos(userId);
-    } else {
-      setIsLoading(false);
+    if (inView && !userTodos.complete) {
+      setPageNumber((prev) => prev + 1);
     }
-  }, [userId, userTodos, fetchUserTodos]);
+  }, [inView, userTodos]);
+
+  useEffect(() => {
+    // If the todos in the state is of different user, then update the state,
+    // else update render with the same state
+    if (moreTodos) {
+      fetchUserTodos(userId, pageNumber);
+    }
+  }, [userId, moreTodos, fetchUserTodos, pageNumber]);
 
   const renderUserTodos = useCallback((): JSX.Element => {
     return (
       <>
-        <h1 style={{ textAlign: "center" }}>Todos</h1>
-        {userTodos.todos &&
-          userTodos.todos.map((todo: Todos) => (
-            <div
-              key={todo.id}
-              style={{
-                minHeight: "30px",
-                margin: "20px",
-                padding: "30px",
-                cursor: "pointer",
-                border: "1px solid black",
+        <Typography
+          variant="pageHeading"
+          sx={{ margin: "1rem auto 2rem auto" }}
+        >
+          Todos
+        </Typography>
+        <Stack
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+          spacing={5}
+        >
+          {userTodos.todos &&
+            userTodos.todos.map((todo: Todos, idx: number) => (
+              <Box
+                ref={userTodos.todos.length === idx + 1 ? inViewRef : null}
+                key={todo.id}
+                onClick={() => {}}
+                width={{
+                  xs: "100%",
+                  sm: theme.breakpoints.values.sm,
+                  md: theme.breakpoints.values.md,
+                  lg: theme.breakpoints.values.lg,
+                }}
+              >
+                <Todo todo={todo} idx={idx} />
+              </Box>
+            ))}
+          {!userTodos.complete && (
+            <Box
+              sx={{
+                display: "flex",
+                margin: "2rem 0",
+                justifyContent: "center",
               }}
             >
-              Title: {todo.title}
-              <br />
-              <br />
-              Completed: {todo.completed ? "Yes" : "No"}
-            </div>
-          ))}
+              <CircularProgress />
+            </Box>
+          )}
+        </Stack>
       </>
     );
-  }, [userTodos]);
+  }, [userTodos, inViewRef, theme]);
 
   return (
-    <div>
-      <div style={{ marginTop: "20px" }}>
-        <Link to={`/users/${userId}/posts`}>
-          <button>Go to Posts</button>
-        </Link>
-      </div>
-      {/* {error && <div>{error.message}</div>} */}
-      {isLoading ? <div>Loading...</div> : renderUserTodos()}
-    </div>
+    <Box
+      sx={{
+        padding: "1rem 2.5%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <TabSwitch userId={userId} currentActive={"todos"} />
+      {error ? <DisplayError /> : renderUserTodos()}
+    </Box>
   );
 };
 
