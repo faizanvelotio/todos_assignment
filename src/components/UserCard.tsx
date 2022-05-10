@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Avatar,
@@ -10,6 +10,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { ActionType } from "src/types/ActionTypes";
+import { UserContentContext } from "src/context/UserContentContext";
 
 interface UserCardProps {
   user: User;
@@ -17,15 +19,16 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const history = useHistory();
-
+  const { dispatch } = useContext(UserContentContext);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleUserClick = useCallback(
-    (userId: number) => {
-      history.push(`users/${userId}/posts`);
+    (user: User) => {
+      history.push(`users/${user.id}/posts`);
+      dispatch({ type: ActionType.SET_CURRENT_USER, payload: user });
     },
-    [history]
+    [history, dispatch]
   );
 
   const handleSettingsClick = useCallback(
@@ -72,7 +75,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
             cursor: "pointer",
             margin: "0 auto",
           }}
-          onClick={() => handleUserClick(user.id)}
+          onClick={() => handleUserClick(user)}
         >
           <Avatar
             sx={{

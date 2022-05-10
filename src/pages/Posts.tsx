@@ -4,16 +4,16 @@ import { useInView } from "react-intersection-observer";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 
 import getLocationId from "src/utils/getLocationId";
-import SinglePost from "src/pages/SinglePost";
+import SinglePost from "src/components/SinglePost";
 import { UserContentContext } from "src/context/UserContentContext";
 import { getUserPosts } from "src/api/Post";
 import { ActionType } from "src/types/ActionTypes";
 import TabSwitch from "src/components/TabSwitch";
 import DisplayError from "src/pages/DisplayError";
 import PostCard from "src/components/PostCard";
+// import useFetchUser from "src/utils/useFetchUser";
 
 const initialViewablePost: ViewPost = {
-  view: false,
   post: {
     post: {
       userId: 0,
@@ -28,7 +28,10 @@ const initialViewablePost: ViewPost = {
 
 const Posts: React.FC = () => {
   const [error, setError] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const userId: number = getLocationId(); // Get the id parameter for URL
+  // const userLoaded = useFetchUser(userId); // For future use when using to post comments
   const { state, dispatch } = useContext(UserContentContext);
   const { userPosts } = state;
   const [viewablePost, setViewablePost] =
@@ -40,12 +43,16 @@ const Posts: React.FC = () => {
   );
   const [inViewRef, inView] = useInView({ threshold: 1 });
 
-  const handlePostClick = useCallback((post: PostWithComment, idx: number) => {
+  const openSinglePost = useCallback((post: PostWithComment, idx: number) => {
     setViewablePost({
-      view: true,
       post: post,
       index: idx,
     });
+    setOpen(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
   }, []);
 
   const fetchUserPosts = useCallback(
@@ -102,6 +109,7 @@ const Posts: React.FC = () => {
             display: "flex",
             justifyContent: "center",
             flexDirection: "column",
+            alignItems: "center",
           }}
           spacing={5}
         >
@@ -110,7 +118,8 @@ const Posts: React.FC = () => {
               <Box
                 ref={userPosts.posts.length === idx + 1 ? inViewRef : null}
                 key={postWithComment.post.id}
-                onClick={() => handlePostClick(postWithComment, idx)}
+                onClick={() => openSinglePost(postWithComment, idx)}
+                sx={{ maxWidth: "1200px" }}
               >
                 <PostCard post={postWithComment} />
               </Box>
@@ -129,28 +138,28 @@ const Posts: React.FC = () => {
         </Stack>
       </>
     ),
-    [userPosts, inViewRef, handlePostClick]
+    [userPosts, inViewRef, openSinglePost]
   );
 
   return (
-    <Box
-      sx={{
-        padding: "1rem 2.5%",
-        display: "flex",
-        color: "#393D46",
-        flexDirection: "column",
-      }}
-    >
-      {viewablePost.view && (
-        <SinglePost
-          post={viewablePost.post}
-          setter={setViewablePost}
-          index={viewablePost.index}
-        />
-      )}
-      <TabSwitch userId={userId} currentActive={"posts"} />
-      {error ? <DisplayError /> : renderPosts()}
-    </Box>
+    <>
+      <Box
+        sx={{
+          padding: "1rem 2.5%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <TabSwitch userId={userId} currentActive={"posts"} />
+        {error ? <DisplayError /> : renderPosts()}
+      </Box>
+      <SinglePost
+        open={open}
+        handleClose={handleClose}
+        post={viewablePost.post}
+        index={viewablePost.index}
+      />
+    </>
   );
 };
 

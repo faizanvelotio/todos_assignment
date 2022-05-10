@@ -21,7 +21,6 @@ function Home() {
             height: "85vh",
             alignItems: "center",
           },
-          color: "#393D46",
         }}
       >
         <Grid
@@ -63,7 +62,7 @@ function Home() {
                   alignSelf: "center",
                 }}
               >
-                <Typography variant="body1">Go to Users</Typography>
+                <Typography variant="buttonText">Go to Users</Typography>
               </Button>
             </Stack>
           </Grid>

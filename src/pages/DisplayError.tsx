@@ -43,7 +43,7 @@ const DisplayError: React.FC<ErrorProps> = ({ message = "Error" }) => {
         }}
         onClick={reload}
       >
-        <Typography>Try again</Typography>
+        <Typography variant="buttonText">Try again</Typography>
       </Button>
     </Box>
   );

@@ -8,13 +8,14 @@ declare module "@mui/material/styles" {
     postHeading: React.CSSProperties;
     pageHeading: React.CSSProperties;
     mainPageBody: React.CSSProperties;
+    buttonText: React.CSSProperties;
   }
 
-  // allow configuration using `createTheme`
   interface TypographyVariantsOptions {
     postHeading?: React.CSSProperties;
     pageHeading?: React.CSSProperties;
     mainPageBody?: React.CSSProperties;
+    buttonText?: React.CSSProperties;
   }
 }
 
@@ -22,7 +23,8 @@ declare module "@mui/material/Typography" {
   interface TypographyPropsVariantOverrides {
     postHeading: true;
     pageHeading: true;
-    mainPageBody: React.CSSProperties;
+    mainPageBody: true;
+    buttonText: true;
   }
 }
 
@@ -83,6 +85,7 @@ const theme = createTheme({
 
 theme.typography.pageHeading = {
   fontFamily: "Alegreya, Arial, serif",
+  color: "#393D46",
   [theme.breakpoints.up("lg")]: {
     fontSize: "4.5rem",
     lineHeight: "4rem",
@@ -99,11 +102,8 @@ theme.typography.pageHeading = {
 
 theme.typography.postHeading = {
   fontFamily: "'Open Sans Condensed', sans-serif",
-  [theme.breakpoints.up("lg")]: {
-    fontSize: "3.5rem",
-    lineHeight: "4rem",
-  },
-  [theme.breakpoints.between("md", "lg")]: {
+  color: "#393D46",
+  [theme.breakpoints.up("md")]: {
     fontSize: "2.5rem",
     lineHeight: "3rem",
   },
@@ -114,6 +114,23 @@ theme.typography.postHeading = {
 };
 
 theme.typography.body1 = {
+  fontFamily: "'Open Sans', san-serif",
+  color: "#393D46",
+  [theme.breakpoints.up("xl")]: {
+    fontSize: "1.6rem",
+    lineHeight: "2rem",
+  },
+  [theme.breakpoints.between("lg", "xl")]: {
+    fontSize: "1.3rem",
+    lineHeight: "1.6rem",
+  },
+  [theme.breakpoints.between("xs", "lg")]: {
+    fontSize: "1rem",
+    lineHeight: "1.4rem",
+  },
+};
+
+theme.typography.buttonText = {
   fontFamily: "'Open Sans', san-serif",
   [theme.breakpoints.up("xl")]: {
     fontSize: "1.6rem",

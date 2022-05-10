@@ -57,7 +57,6 @@ function Users() {
       sx={{
         padding: "1rem 2.5%",
         display: "flex",
-        color: "#393D46",
         flexDirection: "column",
       }}
     >

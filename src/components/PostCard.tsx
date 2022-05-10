@@ -13,7 +13,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         padding: "1.5rem 3%",
         position: "relative",
         cursor: "pointer",
-        color: "#393D46",
       }}
     >
       <Typography

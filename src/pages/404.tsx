@@ -28,7 +28,7 @@ const NotFound: React.FC = () => {
         }}
         onClick={backToHome}
       >
-        <Typography>Back to home</Typography>
+        <Typography variant="buttonText">Back to home</Typography>
       </Button>
     </Box>
   );

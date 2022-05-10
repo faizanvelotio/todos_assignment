@@ -55,7 +55,6 @@ declare interface PostWithComment {
 }
 
 declare interface ViewPost {
-  view: boolean; // Boolean value for controlling the opening and closing of posts
   post: PostWithComment; // The post which need to be displayed
   index: number; // Index value passed for updating the post array in O(1) time
 }

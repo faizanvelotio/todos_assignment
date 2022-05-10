@@ -2,6 +2,7 @@ import React, { createContext, useReducer } from "react";
 import { ActionType } from "src/types/ActionTypes";
 
 interface AppState {
+  currentUser: User;
   users: User[] | null;
   userPosts: {
     userId: number;
@@ -26,7 +27,7 @@ type Action =
       type: ActionType.SET_COMMENT_FOR_POST;
       payload: { postIndex: number; comments: Comment[] };
     }
-  | { type: ActionType.SET_CURRENT_USER_ID; payload: number };
+  | { type: ActionType.SET_CURRENT_USER; payload: User };
 
 interface UserContentProviderProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ const initialState: AppState = {
   users: null,
   userPosts: { userId: -Infinity, posts: [], complete: false, page: 1 },
   userTodos: { userId: -Infinity, todos: null },
+  currentUser: { id: -Infinity, name: "", username: "", email: "" },
 };
 
 const reducer = (state: AppState, action: Action) => {
@@ -86,6 +88,11 @@ const reducer = (state: AppState, action: Action) => {
       return {
         ...state,
         users: action.payload,
+      };
+    case ActionType.SET_CURRENT_USER:
+      return {
+        ...state,
+        currentUser: action.payload,
       };
     case ActionType.SET_COMMENT_FOR_POST:
       const newState = { ...state };

@@ -26,7 +26,9 @@ const TabButton: React.FC<TabButtonProps> = ({ active, text, url }) => {
           cursor: "not-allowed",
         },
       }
-    : {};
+    : {
+        color: "primary.main",
+      };
 
   return (
     <Button
@@ -40,7 +42,7 @@ const TabButton: React.FC<TabButtonProps> = ({ active, text, url }) => {
       }}
       onClick={handleClick}
     >
-      <Typography>{text}</Typography>
+      <Typography variant="buttonText">{text}</Typography>
     </Button>
   );
 };
