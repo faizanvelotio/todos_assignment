@@ -30,13 +30,13 @@ const App: React.FC = () => {
         />
         <Layout
           header={true}
-          render={() => <UserForm edit={false} />}
+          render={() => <UserForm edit={true} />}
           exact
           path="/users/:id"
         />
         <Layout
           header={true}
-          render={() => <UserForm edit={true} />}
+          render={() => <UserForm edit={false} />}
           exact
           path="/createuser"
         />

@@ -9,9 +9,11 @@ declare interface User {
   company?: Company;
 }
 
+declare interface UserWithoutID extends Omit<User, "id"> {}
+
 interface Address {
   street: string;
-  suite?: string;
+  suite: string;
   city: string;
   zipcode: string;
   geo?: {
@@ -22,8 +24,8 @@ interface Address {
 
 interface Company {
   name: string;
-  catchPhrase?: string;
-  bs?: string;
+  catchPhrase: string;
+  bs: string;
 }
 
 declare interface Post {
