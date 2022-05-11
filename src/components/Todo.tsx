@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, {
+  useState,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  MutableRefObject,
+} from "react";
 import { Box, Checkbox, Paper, Typography } from "@mui/material";
 import { AxiosResponse } from "axios";
 import { toggleCompleted } from "src/api/Todos";
@@ -13,12 +20,16 @@ interface TodoProps {
 const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
   const { dispatch } = useContext(UserContentContext);
   const [checked, setChecked] = useState<boolean>(todo.completed);
+  const abortControllerRef: MutableRefObject<AbortController> =
+    useRef<AbortController>(new AbortController());
+
   const handleChange = useCallback(async () => {
     try {
       setChecked(!todo.completed);
       const response: AxiosResponse<Todos> = await toggleCompleted(
         todo.id,
-        !todo.completed
+        !todo.completed,
+        abortControllerRef.current.signal
       );
       if (response.statusText === "OK") {
         dispatch({
@@ -26,10 +37,24 @@ const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
           payload: { idx: idx, completed: !todo.completed },
         });
       }
-    } catch (e) {
-      setChecked(todo.completed);
+      abortControllerRef.current.abort();
+    } catch (e: any) {
+      if (e.message === "canceled") {
+        setChecked(todo.completed);
+      }
     }
   }, [todo, idx, dispatch]);
+
+  useEffect(() => {
+    setChecked(todo.completed);
+  }, [todo.completed]);
+
+  useEffect(() => {
+    const controller: AbortController = abortControllerRef.current;
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   return (
     <Paper
@@ -53,6 +78,7 @@ const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
           sx={{
             width: "90%",
             textDecoration: checked ? "line-through" : null,
+            userSelect: "none",
           }}
         >
           {todo.title}

@@ -138,8 +138,10 @@ const reducer = (state: AppState, action: Action) => {
     case ActionType.TOGGLE_TODO:
       const newState1 = { ...state };
       newState1.userTodos.todos = [...state.userTodos.todos];
-      newState1.userTodos.todos[action.payload.idx].completed =
-        action.payload.completed;
+      newState1.userTodos.todos[action.payload.idx] = {
+        ...state.userTodos.todos[action.payload.idx],
+        completed: action.payload.completed,
+      };
       return newState1;
     default:
       return state;

@@ -6,6 +6,7 @@ interface TodosRequestConfig {
 
 interface ToggleTodoRequestConfig {
   completed: boolean;
+  signal?: AbortSignal;
 }
 
 export const getUserTodos = (
@@ -22,11 +23,15 @@ export const getUserTodos = (
 
 export const toggleCompleted = (
   id: number,
-  completed: boolean
+  completed: boolean,
+  signal: AbortSignal
 ): Promise<AxiosResponse<Todos, ToggleTodoRequestConfig>> =>
   axios.patch<Todos, AxiosResponse<Todos>, ToggleTodoRequestConfig>(
     `/todos/${id}`,
     {
       completed: completed,
+    },
+    {
+      signal: signal,
     }
   );
