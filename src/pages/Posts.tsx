@@ -96,7 +96,15 @@ const Posts: React.FC = () => {
 
   const renderPosts = useCallback(
     () => (
-      <>
+      <Box
+        sx={{
+          padding: "1rem 2.5%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <TabSwitch userId={userId} currentActive={"posts"} />
+
         <Typography
           variant="pageHeading"
           sx={{ marginLeft: "auto", marginRight: "auto" }}
@@ -113,7 +121,10 @@ const Posts: React.FC = () => {
           }}
           spacing={5}
         >
-          {userPosts.posts &&
+          {error ? (
+            <DisplayError />
+          ) : (
+            userPosts.posts &&
             userPosts.posts.map(
               (postWithComment: PostWithComment, idx: number) => (
                 <Box
@@ -125,7 +136,8 @@ const Posts: React.FC = () => {
                   <PostCard post={postWithComment} />
                 </Box>
               )
-            )}
+            )
+          )}
           {!userPosts.complete && (
             <Box
               sx={{
@@ -151,29 +163,27 @@ const Posts: React.FC = () => {
             </Box>
           )}
         </Stack>
-      </>
+      </Box>
     ),
-    [userPosts, inViewRef, openPost]
+    [userPosts, inViewRef, openPost, error, userId]
   );
 
-  return (
-    <>
-      <Box
-        sx={{
-          padding: "1rem 2.5%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <TabSwitch userId={userId} currentActive={"posts"} />
-        {error ? <DisplayError /> : renderPosts()}
-      </Box>
+  const renderSinglePost = useCallback(
+    () => (
       <Post
         open={open}
         handleClose={handleClose}
         post={viewablePost.post}
         index={viewablePost.index}
       />
+    ),
+    [open, handleClose, viewablePost]
+  );
+
+  return (
+    <>
+      {renderPosts()}
+      {renderSinglePost()}
     </>
   );
 };

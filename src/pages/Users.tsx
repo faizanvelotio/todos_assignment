@@ -27,15 +27,15 @@ function Users() {
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
 
+  const { state, dispatch } = useContext(UserContentContext);
+  const { users } = state;
+
   useEffect(() => {
     if (location.state) {
       setMessage(location.state.message);
       window.history.replaceState({}, document.title);
     }
   }, [location]);
-
-  const { state, dispatch } = useContext(UserContentContext);
-  const { users } = state;
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -57,38 +57,7 @@ function Users() {
   }, [fetchUsers, users]);
 
   const renderUsers = useCallback(
-    () =>
-      users && (
-        <Grid container spacing={{ xs: 4, md: 3, xl: 5 }}>
-          {users.map((user: User) => (
-            <Grid key={user.id} item xs={12} sm={6} md={4} lg={3}>
-              <UserCard user={user} />
-            </Grid>
-          ))}
-          <Grid item xs={12} sm={6} md={4} lg={3}>
-            <AddUser />
-          </Grid>
-        </Grid>
-      ),
-    [users]
-  );
-
-  const renderSnackbar = useCallback(
     () => (
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={Boolean(message)}
-        autoHideDuration={6000}
-        onClose={() => setMessage("")}
-      >
-        <Alert severity="success">{message}</Alert>
-      </Snackbar>
-    ),
-    [message]
-  );
-
-  return (
-    <>
       <Box
         sx={{
           padding: "1rem 2.5%",
@@ -113,11 +82,47 @@ function Users() {
                 justifyContent: "center",
               }}
             >
-              {isLoading ? <CircularProgress /> : renderUsers()}
+              {isLoading ? (
+                <CircularProgress />
+              ) : (
+                users && (
+                  <Grid container spacing={{ xs: 4, md: 3, xl: 5 }}>
+                    {users.map((user: User) => (
+                      <Grid key={user.id} item xs={12} sm={6} md={4} lg={3}>
+                        <UserCard user={user} />
+                      </Grid>
+                    ))}
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                      <AddUser />
+                    </Grid>
+                  </Grid>
+                )
+              )}
             </Box>
           </>
         )}
       </Box>
+    ),
+    [users, error, isLoading]
+  );
+
+  const renderSnackbar = useCallback(
+    () => (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={Boolean(message)}
+        autoHideDuration={6000}
+        onClose={() => setMessage("")}
+      >
+        <Alert severity="success">{message}</Alert>
+      </Snackbar>
+    ),
+    [message]
+  );
+
+  return (
+    <>
+      {renderUsers()}
       {renderSnackbar()}
     </>
   );

@@ -17,34 +17,37 @@ const TabButton: React.FC<TabButtonProps> = ({ active, text, url }) => {
     }
   }, [active, history, url]);
 
-  const styles = active
-    ? {
-        bgcolor: "primary.main",
-        color: "background.paper",
-        "&:hover": {
+  const renderTabButton = useCallback(() => {
+    const styles = active
+      ? {
           bgcolor: "primary.main",
-          cursor: "not-allowed",
-        },
-      }
-    : {
-        color: "primary.main",
-      };
+          color: "background.paper",
+          "&:hover": {
+            bgcolor: "primary.main",
+            cursor: "not-allowed",
+          },
+        }
+      : {
+          color: "primary.main",
+        };
+    return (
+      <Button
+        variant="outlined"
+        sx={{
+          ...styles,
+          fontWeight: "bold",
+          borderRadius: 0,
+          width: "100%",
+          height: "3rem",
+        }}
+        onClick={handleClick}
+      >
+        <Typography variant="buttonText">{text}</Typography>
+      </Button>
+    );
+  }, [handleClick, text, active]);
 
-  return (
-    <Button
-      variant="outlined"
-      sx={{
-        ...styles,
-        fontWeight: "bold",
-        borderRadius: 0,
-        width: "100%",
-        height: "3rem",
-      }}
-      onClick={handleClick}
-    >
-      <Typography variant="buttonText">{text}</Typography>
-    </Button>
-  );
+  return renderTabButton();
 };
 
 export default TabButton;

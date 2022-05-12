@@ -70,69 +70,82 @@ const UserTodos: React.FC = () => {
 
   const renderUserTodos = useCallback((): JSX.Element => {
     return (
-      <>
-        <Typography
-          variant="pageHeading"
-          sx={{ margin: "1rem auto 2rem auto" }}
-        >
-          Todos
-        </Typography>
-        <Stack
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-          spacing={5}
-        >
-          {userTodos.todos &&
-            userTodos.todos.map((todo: Todos, idx: number) => (
-              <Box
-                ref={userTodos.todos.length === idx + 1 ? inViewRef : null}
-                key={todo.id}
-                onClick={() => {}}
-                width={{
-                  xs: "100%",
-                  sm: theme.breakpoints.values.sm,
-                  md: theme.breakpoints.values.md,
-                  lg: theme.breakpoints.values.lg,
-                }}
-              >
-                <Todo todo={todo} idx={idx} />
-              </Box>
-            ))}
-          {!userTodos.complete && (
-            <Box
+      <Box
+        sx={{
+          padding: "1rem 2.5%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <TabSwitch userId={userId} currentActive={"todos"} />
+        {error ? (
+          <DisplayError />
+        ) : (
+          <>
+            <Typography
+              variant="pageHeading"
+              sx={{ margin: "1rem auto 2rem auto" }}
+            >
+              Todos
+            </Typography>
+            <Stack
               sx={{
                 display: "flex",
-                margin: "2rem 0",
                 justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
               }}
+              spacing={5}
             >
-              <CircularProgress />
-            </Box>
-          )}
-          {userTodos.complete && userTodos.todos.length === 0 && (
-            <Box
-              sx={{
-                display: "flex",
-                margin: "2rem 0",
-                justifyContent: "center",
-              }}
-            >
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                <Box sx={{ fontStyle: "italic" }} component="span">
-                  Chillaaax!
-                </Box>{" "}
-                NOTHING TODO
-              </Typography>
-            </Box>
-          )}
-        </Stack>
-      </>
+              {userTodos.todos &&
+                userTodos.todos.map((todo: Todos, idx: number) => (
+                  <Box
+                    ref={userTodos.todos.length === idx + 1 ? inViewRef : null}
+                    key={todo.id}
+                    onClick={() => {}}
+                    width={{
+                      xs: "100%",
+                      sm: theme.breakpoints.values.sm,
+                      md: theme.breakpoints.values.md,
+                      lg: theme.breakpoints.values.lg,
+                    }}
+                  >
+                    <Todo todo={todo} idx={idx} />
+                  </Box>
+                ))}
+              {!userTodos.complete && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    margin: "2rem 0",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+              {userTodos.complete && userTodos.todos.length === 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    margin: "2rem 0",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    <Box sx={{ fontStyle: "italic" }} component="span">
+                      Chillaaax!
+                    </Box>{" "}
+                    NOTHING TODO
+                  </Typography>
+                </Box>
+              )}
+            </Stack>
+          </>
+        )}
+      </Box>
     );
-  }, [userTodos, inViewRef, theme]);
+  }, [userTodos, inViewRef, theme, error, userId]);
 
   return (
     <Box

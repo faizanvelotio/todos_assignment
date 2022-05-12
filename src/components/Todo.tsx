@@ -56,41 +56,46 @@ const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
     };
   }, []);
 
-  return (
-    <Paper
-      elevation={checked ? 2 : 4}
-      sx={{
-        padding: "1.5rem 3%",
-        position: "relative",
-        cursor: "pointer",
-        bgcolor: checked ? "#FAFAFA" : "background.paper",
-      }}
-      onClick={handleChange}
-    >
-      <Box
+  const renderTodo = useCallback(
+    () => (
+      <Paper
+        elevation={checked ? 2 : 4}
         sx={{
-          display: "flex",
-          alignItems: "center",
+          padding: "1.5rem 3%",
+          position: "relative",
+          cursor: "pointer",
+          bgcolor: checked ? "#FAFAFA" : "background.paper",
         }}
+        onClick={handleChange}
       >
-        <Typography
-          component="div"
+        <Box
           sx={{
-            width: "90%",
-            textDecoration: checked ? "line-through" : null,
-            userSelect: "none",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          {todo.title}
-        </Typography>
-        <Checkbox
-          aria-label="Check Todos"
-          checked={checked}
-          sx={{ "& .MuiSvgIcon-root": { fontSize: 32 } }}
-        />
-      </Box>
-    </Paper>
+          <Typography
+            component="div"
+            sx={{
+              width: "90%",
+              textDecoration: checked ? "line-through" : null,
+              userSelect: "none",
+            }}
+          >
+            {todo.title}
+          </Typography>
+          <Checkbox
+            aria-label="Check Todos"
+            checked={checked}
+            sx={{ "& .MuiSvgIcon-root": { fontSize: 32 } }}
+          />
+        </Box>
+      </Paper>
+    ),
+    [checked, handleChange, todo.title]
   );
+
+  return renderTodo();
 };
 
 export default Todo;
