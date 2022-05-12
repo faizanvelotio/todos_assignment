@@ -113,6 +113,22 @@ const UserTodos: React.FC = () => {
               <CircularProgress />
             </Box>
           )}
+          {userTodos.complete && userTodos.todos.length === 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                margin: "2rem 0",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Box sx={{ fontStyle: "italic" }} component="span">
+                  Chillaaax!
+                </Box>{" "}
+                NOTHING TODO
+              </Typography>
+            </Box>
+          )}
         </Stack>
       </>
     );

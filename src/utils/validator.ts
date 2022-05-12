@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-export const validator = Yup.object({
+const validator = Yup.object({
   name: Yup.string()
     .min(2, "Minimum 2 characters are required.")
     .required("Name is required."),
@@ -8,7 +8,10 @@ export const validator = Yup.object({
     .min(2, "Minimum 2 characters are required.")
     .required("Username is required."),
   email: Yup.string().email("Email is invalid").required("Email is required"),
-  website: Yup.string().url("Invalid URL"),
+  website: Yup.string().matches(
+    new RegExp(/^(https:\/\/|http:\/\/)?(www\.)?(\w)+\.(\w)+$/),
+    "Invalid URL"
+  ),
   phone: Yup.string()
     .matches(new RegExp(/^[\d \-().x]+$/), "Invalid Phone Number")
     .max(30, "Phone number is too long"),
@@ -19,3 +22,5 @@ export const validator = Yup.object({
     ),
   }),
 });
+
+export default validator;

@@ -4,7 +4,7 @@ import { getUser } from "src/api/User";
 import { UserContentContext } from "src/context/UserContentContext";
 import { ActionType } from "src/types/ActionTypes";
 
-const useFetchUser = (userId: number): boolean => {
+const useFetchUser = (userId: number | null): boolean => {
   const [success, setSuccess] = useState<boolean>(false);
   const { state, dispatch } = useContext(UserContentContext);
   const { currentUser } = state;
@@ -23,10 +23,10 @@ const useFetchUser = (userId: number): boolean => {
   );
 
   useEffect(() => {
-    if (currentUser.id !== userId) {
-      fetchUser(userId);
-    } else {
+    if (userId === null || currentUser.id === userId) {
       setSuccess(true);
+    } else if (currentUser.id !== userId) {
+      fetchUser(userId);
     }
   }, [currentUser, userId, fetchUser]);
 

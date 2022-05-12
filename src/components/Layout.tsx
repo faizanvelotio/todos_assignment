@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
-import { Route, RouteProps } from "react-router-dom";
+import { Route, RouteProps, RouteComponentProps } from "react-router-dom";
 import Navbar from "src/components/Navbar";
 
 interface LayoutProps extends RouteProps {
   header?: boolean;
-  render: () => ReactNode;
+  render: (props: RouteComponentProps) => ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ header, render, ...routeProps }) => {

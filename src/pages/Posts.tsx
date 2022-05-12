@@ -137,6 +137,19 @@ const Posts: React.FC = () => {
               <CircularProgress />
             </Box>
           )}
+          {userPosts.complete && userPosts.posts.length === 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                margin: "2rem 0",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                NO POSTS CREATED
+              </Typography>
+            </Box>
+          )}
         </Stack>
       </>
     ),

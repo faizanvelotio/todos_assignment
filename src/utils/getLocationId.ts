@@ -9,5 +9,5 @@ export default function useLocationId(): number {
       return Number(part);
     }
   }
-  return -1;
+  return -Infinity;
 }

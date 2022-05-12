@@ -25,8 +25,8 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 
   const handleUserClick = useCallback(
     (user: User) => {
-      history.push(`users/${user.id}/posts`);
       dispatch({ type: ActionType.SET_CURRENT_USER, payload: user });
+      history.push(`users/${user.id}/posts`);
     },
     [history, dispatch]
   );
@@ -41,6 +41,12 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const handleSettingsClose = useCallback(() => {
     setAnchorEl(null);
   }, []);
+
+  const editUser = useCallback(() => {
+    setAnchorEl(null);
+    dispatch({ type: ActionType.SET_CURRENT_USER, payload: user });
+    history.push(`users/${user.id}`);
+  }, [history, dispatch, user]);
 
   const renderUserCard = useCallback(
     () => (
@@ -137,7 +143,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <div
+          <Box
             style={{
               fontSize: "1rem",
               fontFamily: "Roboto, sans-serif",
@@ -147,13 +153,14 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
               justifyContent: "center",
               alignItems: "center",
             }}
+            onClick={editUser}
           >
             Edit Profile
-          </div>
+          </Box>
         </MenuItem>
       </Menu>
     ),
-    [open, anchorEl, handleSettingsClose]
+    [open, anchorEl, editUser, handleSettingsClose]
   );
   return (
     <>

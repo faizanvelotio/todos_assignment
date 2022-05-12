@@ -14,19 +14,24 @@ export const getUserTodos = (
   pageNumber: number,
   limit: number
 ): Promise<AxiosResponse<Todos[], TodosRequestConfig>> =>
-  axios.get<Todos[], AxiosResponse<Todos[]>, TodosRequestConfig>(
-    `/users/${userId}/todos`,
-    {
-      params: { _page: pageNumber, _limit: limit },
-    }
-  );
+  axios.get<
+    Todos[],
+    AxiosResponse<Todos[], TodosRequestConfig>,
+    TodosRequestConfig
+  >(`/users/${userId}/todos`, {
+    params: { _page: pageNumber, _limit: limit },
+  });
 
 export const toggleCompleted = (
   id: number,
   completed: boolean,
   signal: AbortSignal
 ): Promise<AxiosResponse<Todos, ToggleTodoRequestConfig>> =>
-  axios.patch<Todos, AxiosResponse<Todos>, ToggleTodoRequestConfig>(
+  axios.patch<
+    Todos,
+    AxiosResponse<Todos, ToggleTodoRequestConfig>,
+    ToggleTodoRequestConfig
+  >(
     `/todos/${id}`,
     {
       completed: completed,

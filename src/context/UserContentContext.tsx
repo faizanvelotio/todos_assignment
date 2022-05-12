@@ -36,7 +36,12 @@ type Action =
   | {
       type: ActionType.TOGGLE_TODO;
       payload: { idx: number; completed: boolean };
-    };
+    }
+  | {
+      type: ActionType.ADD_USER;
+      payload: User;
+    }
+  | { type: ActionType.UPDATE_USER; payload: User };
 
 interface UserContentProviderProps {
   children: React.ReactNode;
@@ -118,16 +123,6 @@ const reducer = (state: AppState, action: Action) => {
           },
         };
       }
-    case ActionType.SET_USERS:
-      return {
-        ...state,
-        users: action.payload,
-      };
-    case ActionType.SET_CURRENT_USER:
-      return {
-        ...state,
-        currentUser: action.payload,
-      };
     case ActionType.SET_COMMENT_FOR_POST:
       const newState = { ...state };
       if (newState.userPosts.posts !== null) {
@@ -143,6 +138,44 @@ const reducer = (state: AppState, action: Action) => {
         completed: action.payload.completed,
       };
       return newState1;
+    case ActionType.SET_USERS:
+      return {
+        ...state,
+        users: action.payload,
+      };
+    case ActionType.SET_CURRENT_USER:
+      return {
+        ...state,
+        currentUser: action.payload,
+      };
+    case ActionType.ADD_USER:
+      if (state.users === null) {
+        return {
+          ...state,
+          users: [action.payload],
+        };
+      } else {
+        return {
+          ...state,
+          users: [...state.users, action.payload],
+        };
+      }
+    case ActionType.UPDATE_USER:
+      const users = state.users;
+      if (users !== null) {
+        const idx: number = users.findIndex(
+          (user: User) => user.id === action.payload.id
+        );
+        return {
+          ...state,
+          users: [
+            ...users.slice(0, idx),
+            action.payload,
+            ...users.slice(idx + 1),
+          ],
+        };
+      }
+      return state;
     default:
       return state;
   }

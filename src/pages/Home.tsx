@@ -62,7 +62,7 @@ function Home() {
                   alignSelf: "center",
                 }}
               >
-                <Typography variant="buttonText">Go to Users</Typography>
+                <Typography variant="buttonText">Browse Users</Typography>
               </Button>
             </Stack>
           </Grid>
