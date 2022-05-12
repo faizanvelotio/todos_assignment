@@ -29,14 +29,15 @@ const initialViewablePost: ViewPost = {
 const Posts: React.FC = () => {
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
-
   const userId: number = getLocationId(); // Get the id parameter for URL
   // const userLoaded = useFetchUser(userId); // For future use when using to post comments
   const { state, dispatch } = useContext(UserContentContext);
   const { userPosts } = state;
   const [viewablePost, setViewablePost] =
     useState<ViewPost>(initialViewablePost); // For displaying the selected post modal
-
+  const morePosts: boolean = !(
+    userId === userPosts.userId && userPosts.complete
+  );
   // For intersection observer
   const [pageNumber, setPageNumber] = useState<number>(
     userId !== userPosts.userId ? 1 : userPosts.page
@@ -89,10 +90,10 @@ const Posts: React.FC = () => {
   // Fetch the userposts if a new user is there or still some update
   // page number is to be loaded
   useEffect(() => {
-    if (!(userId === userPosts.userId && userPosts.complete)) {
+    if (morePosts) {
       fetchUserPosts(userId, pageNumber);
     }
-  }, [userId, userPosts, fetchUserPosts, pageNumber]);
+  }, [userId, morePosts, fetchUserPosts, pageNumber]);
 
   const renderPosts = useCallback(
     () => (

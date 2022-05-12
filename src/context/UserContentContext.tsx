@@ -60,16 +60,19 @@ const reducer = (state: AppState, action: Action) => {
       // If all the data has been loaded, then update
       // complete to true
       if (!action.payload.posts.length) {
-        const newState = { ...state };
-        newState.userPosts.userId = action.payload.userId;
-        newState.userPosts.complete = true;
-        newState.userPosts.page = action.payload.pageNumber;
-        if (action.payload.userId !== state.userPosts.userId) {
-          newState.userPosts.posts = [];
-        }
-        return newState;
+        return {
+          ...state,
+          userPosts: {
+            posts:
+              action.payload.userId !== state.userPosts.userId
+                ? []
+                : state.userPosts.posts,
+            userId: action.payload.userId,
+            complete: true,
+            page: action.payload.pageNumber,
+          },
+        };
       } else {
-        const newState = { ...state };
         let postsWithoutComments: Post[] = action.payload.posts;
         let postsWithComments: PostWithComment[] = [];
         postsWithoutComments.forEach((val: Post) => {
@@ -78,19 +81,18 @@ const reducer = (state: AppState, action: Action) => {
             comments: null,
           });
         });
-
-        if (action.payload.userId !== state.userPosts.userId) {
-          newState.userPosts.posts = postsWithComments;
-        } else {
-          newState.userPosts.posts = [
-            ...state.userPosts.posts,
-            ...postsWithComments,
-          ];
-        }
-        newState.userPosts.userId = action.payload.userId;
-        newState.userPosts.page = action.payload.pageNumber;
-        newState.userPosts.complete = false;
-        return newState;
+        return {
+          ...state,
+          userPosts: {
+            posts:
+              action.payload.userId !== state.userPosts.userId
+                ? postsWithComments
+                : [...state.userPosts.posts, ...postsWithComments],
+            userId: action.payload.userId,
+            page: action.payload.pageNumber,
+            complete: false,
+          },
+        };
       }
 
     case ActionType.SET_TODOS:

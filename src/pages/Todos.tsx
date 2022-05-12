@@ -147,18 +147,7 @@ const UserTodos: React.FC = () => {
     );
   }, [userTodos, inViewRef, theme, error, userId]);
 
-  return (
-    <Box
-      sx={{
-        padding: "1rem 2.5%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <TabSwitch userId={userId} currentActive={"todos"} />
-      {error ? <DisplayError /> : renderUserTodos()}
-    </Box>
-  );
+  return renderUserTodos();
 };
 
 export default UserTodos;

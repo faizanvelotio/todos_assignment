@@ -2,7 +2,10 @@ import * as Yup from "yup";
 
 const validator = Yup.object({
   name: Yup.string()
-    .min(2, "Minimum 2 characters are required.")
+    .matches(
+      new RegExp(/^(\w)+ (\w)+$/),
+      "Name should contain first name and last name"
+    )
     .required("Name is required."),
   username: Yup.string()
     .min(2, "Minimum 2 characters are required.")
