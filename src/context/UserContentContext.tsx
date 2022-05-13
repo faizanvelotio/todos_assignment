@@ -29,8 +29,8 @@ type Action =
       payload: { userId: number; todos: Todos[]; pageNumber: number };
     }
   | {
-      type: ActionType.SET_COMMENT_FOR_POST;
-      payload: { postIndex: number; comments: Comment[] };
+      type: ActionType.SET_COMMENTS_FOR_POST;
+      payload: { postIndex: number; comments: PostComment[] };
     }
   | { type: ActionType.SET_CURRENT_USER; payload: User }
   | {
@@ -42,7 +42,11 @@ type Action =
       payload: User;
     }
   | { type: ActionType.UPDATE_USER; payload: User }
-  | { type: ActionType.ADD_POST; payload: Post };
+  | { type: ActionType.ADD_POST; payload: Post }
+  | {
+      type: ActionType.ADD_POST_COMMENT;
+      payload: { postIndex: number; comment: PostComment };
+    };
 
 interface UserContentProviderProps {
   children: React.ReactNode;
@@ -126,21 +130,31 @@ const reducer = (state: AppState, action: Action) => {
           },
         };
       }
-    case ActionType.SET_COMMENT_FOR_POST:
+    case ActionType.SET_COMMENTS_FOR_POST: {
       const newState = { ...state };
       if (newState.userPosts.posts !== null) {
         newState.userPosts.posts[action.payload.postIndex].comments =
           action.payload.comments;
       }
       return newState;
+    }
+    case ActionType.ADD_POST_COMMENT: {
+      const newState = { ...state };
+      if (newState.userPosts.posts !== null) {
+        newState.userPosts.posts[action.payload.postIndex].comments?.push(
+          action.payload.comment
+        );
+      }
+      return newState;
+    }
     case ActionType.TOGGLE_TODO:
-      const newState1 = { ...state };
-      newState1.userTodos.todos = [...state.userTodos.todos];
-      newState1.userTodos.todos[action.payload.idx] = {
+      const newState = { ...state };
+      newState.userTodos.todos = [...state.userTodos.todos];
+      newState.userTodos.todos[action.payload.idx] = {
         ...state.userTodos.todos[action.payload.idx],
         completed: action.payload.completed,
       };
-      return newState1;
+      return newState;
     case ActionType.SET_USERS:
       return {
         ...state,

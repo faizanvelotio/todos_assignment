@@ -34,3 +34,12 @@ export const postValidator = Yup.object({
     .min(5, "Body must atleast contain 5 characters")
     .required("Body of post is required"),
 });
+
+export const commentValidator = Yup.object({
+  name: Yup.string()
+    .min(2, "Comment name must atleast contain 2 characters")
+    .required("Comment name is required"),
+  body: Yup.string()
+    .min(5, "Comment body must atleast contain 5 characters")
+    .required("Comment body is required"),
+});

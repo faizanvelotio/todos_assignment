@@ -18,6 +18,7 @@ import { getPostComments } from "src/api/Post";
 import { ActionType } from "src/types/ActionTypes";
 import { UserContentContext } from "src/context/UserContentContext";
 import CommentCard from "src/components/CommentCard";
+import CommentInput from "src/components/CommentInput";
 
 interface PostProps {
   open: boolean;
@@ -27,19 +28,21 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
-  const { dispatch } = useContext(UserContentContext);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [error, setError] = useState(false);
+  const { state, dispatch } = useContext(UserContentContext);
+  const { currentUser } = state;
+  const { email } = currentUser;
 
   const fetchPostComments = useCallback(
     async (postId: number, idx: number) => {
       try {
-        const response: AxiosResponse<Comment[]> = await getPostComments(
+        const response: AxiosResponse<PostComment[]> = await getPostComments(
           postId
         );
         dispatch({
-          type: ActionType.SET_COMMENT_FOR_POST,
+          type: ActionType.SET_COMMENTS_FOR_POST,
           payload: { postIndex: idx, comments: response.data },
         });
       } catch (e) {
@@ -100,10 +103,24 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
                 spacing={2}
                 divider={<Divider flexItem />}
               >
-                {post.comments ? (
-                  post.comments.map((comment: Comment) => (
-                    <CommentCard comment={comment} key={comment.id} />
-                  ))
+                <CommentInput
+                  postId={post.post.id}
+                  postIdx={index}
+                  email={email}
+                />
+                {post.comments !== null ? (
+                  post.comments.length ? (
+                    post.comments.map((comment: PostComment) => (
+                      <CommentCard comment={comment} key={comment.id} />
+                    ))
+                  ) : (
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ fontWeight: "bold", alignSelf: "center" }}
+                    >
+                      NO COMMENTS YET
+                    </Typography>
+                  )
                 ) : (
                   <CircularProgress sx={{ alignSelf: "center" }} />
                 )}
@@ -131,7 +148,7 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
         )}
       </Dialog>
     ),
-    [open, post, error, fullScreen, handleClose]
+    [open, post, index, error, email, fullScreen, handleClose]
   );
 
   return renderPost();

@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import React, { useCallback } from "react";
 
 interface CommentCardProps {
-  comment: Comment;
+  comment: PostComment;
 }
 
 const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {

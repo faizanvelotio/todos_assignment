@@ -13,7 +13,7 @@ import ErrorPage from "src/pages/ErrorPage";
 import PostCard from "src/components/PostCard";
 import { useLocation } from "react-router-dom";
 import AlertMessage from "src/components/AlertMessage";
-// import useFetchUser from "src/utils/useFetchUser";
+import useFetchUser from "src/utils/useFetchUser";
 
 const initialViewablePost: ViewPost = {
   post: {
@@ -31,10 +31,13 @@ const initialViewablePost: ViewPost = {
 const Posts: React.FC = () => {
   const location = useLocation<LocationPropsForMsg>();
   const userId: number = getLocationId(); // Get the id parameter for URL
-  // const userLoaded = useFetchUser(userId); // For future use when using to post comments
+  const userLoaded = useFetchUser(userId); // Loads the user data if not present in state
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState(""); // For showing the success message
+  const [alertInfo, setAlertInfo] = useState<AlertInfo>({
+    status: "success",
+    message: "",
+  }); // For showing message
   const [viewablePost, setViewablePost] =
     useState<ViewPost>(initialViewablePost); // For displaying the selected post modal
   const { state, dispatch } = useContext(UserContentContext);
@@ -48,13 +51,23 @@ const Posts: React.FC = () => {
   );
   const [inViewRef, inView] = useInView({ threshold: 1 });
 
-  const openPost = useCallback((post: PostWithComment, idx: number) => {
-    setViewablePost({
-      post: post,
-      index: idx,
-    });
-    setOpen(true);
-  }, []);
+  const openPost = useCallback(
+    (post: PostWithComment, idx: number) => {
+      setViewablePost({
+        post: post,
+        index: idx,
+      });
+      if (userLoaded) {
+        setOpen(true);
+      } else {
+        setAlertInfo({
+          status: "error",
+          message: "Sorry, post cannot be opened.",
+        });
+      }
+    },
+    [userLoaded]
+  );
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -83,7 +96,10 @@ const Posts: React.FC = () => {
     [dispatch]
   );
 
-  const handleAlertClose = useCallback(() => setMessage(""), []);
+  const handleAlertClose = useCallback(
+    () => setAlertInfo({ status: "success", message: "" }),
+    []
+  );
 
   // When the element is in view, update the page number and
   // fetch new elements
@@ -104,7 +120,7 @@ const Posts: React.FC = () => {
   // For displaying the success message only one time
   useEffect(() => {
     if (location.state) {
-      setMessage(location.state.message);
+      setAlertInfo({ status: "success", message: location.state.message });
       window.history.replaceState({}, document.title);
     }
   }, [location]);
@@ -139,43 +155,47 @@ const Posts: React.FC = () => {
           {error ? (
             <ErrorPage />
           ) : (
-            userPosts.posts &&
-            userPosts.posts.map(
-              (postWithComment: PostWithComment, idx: number) => (
+            <>
+              {userPosts.posts &&
+                userPosts.posts.map(
+                  (postWithComment: PostWithComment, idx: number) => (
+                    <Box
+                      ref={
+                        userPosts.posts.length === idx + 1 ? inViewRef : null
+                      }
+                      key={postWithComment.post.id}
+                      onClick={() => openPost(postWithComment, idx)}
+                      sx={{ maxWidth: "1200px", width: "100%" }}
+                    >
+                      <PostCard post={postWithComment} />
+                    </Box>
+                  )
+                )}
+              {!userPosts.complete && (
                 <Box
-                  ref={userPosts.posts.length === idx + 1 ? inViewRef : null}
-                  key={postWithComment.post.id}
-                  onClick={() => openPost(postWithComment, idx)}
-                  sx={{ maxWidth: "1200px", width: "100%" }}
+                  sx={{
+                    display: "flex",
+                    margin: "2rem 0",
+                    justifyContent: "center",
+                  }}
                 >
-                  <PostCard post={postWithComment} />
+                  <CircularProgress />
                 </Box>
-              )
-            )
-          )}
-          {!userPosts.complete && (
-            <Box
-              sx={{
-                display: "flex",
-                margin: "2rem 0",
-                justifyContent: "center",
-              }}
-            >
-              <CircularProgress />
-            </Box>
-          )}
-          {userPosts.complete && userPosts.posts.length === 0 && (
-            <Box
-              sx={{
-                display: "flex",
-                margin: "2rem 0",
-                justifyContent: "center",
-              }}
-            >
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                NO POSTS CREATED
-              </Typography>
-            </Box>
+              )}
+              {userPosts.complete && userPosts.posts.length === 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    margin: "2rem 0",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    NO POSTS CREATED
+                  </Typography>
+                </Box>
+              )}
+            </>
           )}
         </Stack>
       </Box>
@@ -196,14 +216,8 @@ const Posts: React.FC = () => {
   );
 
   const renderAlert = useCallback(
-    () => (
-      <AlertMessage
-        message={message}
-        status={"success"}
-        handleClose={handleAlertClose}
-      />
-    ),
-    [message, handleAlertClose]
+    () => <AlertMessage {...alertInfo} handleClose={handleAlertClose} />,
+    [alertInfo, handleAlertClose]
   );
 
   return (

@@ -21,17 +21,6 @@ export const getUserPosts = (
     params: { _page: pageNumber, _limit: limit },
   });
 
-export const getPostComments = (
-  postId: number
-): Promise<AxiosResponse<Comment[], PostCommentsConfig>> =>
-  axios.get<
-    Comment[],
-    AxiosResponse<Comment[], PostCommentsConfig>,
-    PostCommentsConfig
-  >(`/comments`, {
-    params: { postId: postId },
-  });
-
 export const createPost = (
   post: PostWithoutID
 ): Promise<AxiosResponse<Post, PostWithoutID>> =>
@@ -39,3 +28,23 @@ export const createPost = (
     "/posts",
     post
   );
+
+export const getPostComments = (
+  postId: number
+): Promise<AxiosResponse<PostComment[], PostCommentsConfig>> =>
+  axios.get<
+    PostComment[],
+    AxiosResponse<PostComment[], PostCommentsConfig>,
+    PostCommentsConfig
+  >("/comments", {
+    params: { postId: postId },
+  });
+
+export const createCommentForPost = (
+  comment: PostCommentWithoutID
+): Promise<AxiosResponse<PostComment, PostCommentWithoutID>> =>
+  axios.post<
+    PostComment,
+    AxiosResponse<PostComment, PostCommentWithoutID>,
+    PostCommentWithoutID
+  >("/comments", comment);
