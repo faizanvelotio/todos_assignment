@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const validator = Yup.object({
+export const userValidator = Yup.object({
   name: Yup.string()
     .matches(
       new RegExp(/^(\w)+ (\w)+$/),
@@ -26,4 +26,11 @@ const validator = Yup.object({
   }),
 });
 
-export default validator;
+export const postValidator = Yup.object({
+  title: Yup.string()
+    .min(2, "Title must atleast contain 2 characters")
+    .required("Title of post is required"),
+  body: Yup.string()
+    .min(5, "Body must atleast contain 5 characters")
+    .required("Body of post is required"),
+});

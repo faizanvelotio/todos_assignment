@@ -9,7 +9,7 @@ import getLocationId from "src/utils/getLocationId";
 import { getUserTodos } from "src/api/Todos";
 import { ActionType } from "src/types/ActionTypes";
 import TabSwitch from "src/components/TabSwitch";
-import DisplayError from "src/pages/DisplayError";
+import ErrorPage from "src/pages/ErrorPage";
 import Todo from "src/components/Todo";
 
 const UserTodos: React.FC = () => {
@@ -79,7 +79,7 @@ const UserTodos: React.FC = () => {
       >
         <TabSwitch userId={userId} currentActive={"todos"} />
         {error ? (
-          <DisplayError />
+          <ErrorPage />
         ) : (
           <>
             <Typography

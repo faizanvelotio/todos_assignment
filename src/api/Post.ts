@@ -31,3 +31,11 @@ export const getPostComments = (
   >(`/comments`, {
     params: { postId: postId },
   });
+
+export const createPost = (
+  post: PostWithoutID
+): Promise<AxiosResponse<Post, PostWithoutID>> =>
+  axios.post<Post, AxiosResponse<Post, PostWithoutID>, PostWithoutID>(
+    "/posts",
+    post
+  );

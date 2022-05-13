@@ -6,7 +6,7 @@ interface ErrorProps {
   message?: string;
 }
 
-const DisplayError: React.FC<ErrorProps> = ({ message = "Error" }) => {
+const ErrorPage: React.FC<ErrorProps> = ({ message = "Error" }) => {
   const reload = useCallback(() => window.location.reload(), []);
 
   const renderDisplayError = useCallback(
@@ -54,4 +54,4 @@ const DisplayError: React.FC<ErrorProps> = ({ message = "Error" }) => {
   return renderDisplayError();
 };
 
-export default DisplayError;
+export default ErrorPage;

@@ -35,6 +35,8 @@ declare interface Post {
   body: string;
 }
 
+declare interface PostWithoutID extends Omit<Post, "id"> {}
+
 declare interface Todos {
   userid: number;
   id: number;
@@ -58,4 +60,8 @@ declare interface PostWithComment {
 declare interface ViewPost {
   post: PostWithComment; // The post which need to be displayed
   index: number; // Index value passed for updating the post array in O(1) time
+}
+
+declare interface LocationPropsForMsg {
+  message: string;
 }

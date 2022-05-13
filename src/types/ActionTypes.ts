@@ -7,4 +7,5 @@ export enum ActionType {
   ADD_USER = "ADD_USER",
   UPDATE_USER = "UPDATE_USER",
   TOGGLE_TODO = "TOGGLE_TODO",
+  ADD_POST = "ADD_POST",
 }

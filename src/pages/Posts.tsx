@@ -9,8 +9,10 @@ import { UserContentContext } from "src/context/UserContentContext";
 import { getUserPosts } from "src/api/Post";
 import { ActionType } from "src/types/ActionTypes";
 import TabSwitch from "src/components/TabSwitch";
-import DisplayError from "src/pages/DisplayError";
+import ErrorPage from "src/pages/ErrorPage";
 import PostCard from "src/components/PostCard";
+import { useLocation } from "react-router-dom";
+import AlertMessage from "src/components/AlertMessage";
 // import useFetchUser from "src/utils/useFetchUser";
 
 const initialViewablePost: ViewPost = {
@@ -27,17 +29,19 @@ const initialViewablePost: ViewPost = {
 };
 
 const Posts: React.FC = () => {
-  const [error, setError] = useState(false);
-  const [open, setOpen] = useState(false);
+  const location = useLocation<LocationPropsForMsg>();
   const userId: number = getLocationId(); // Get the id parameter for URL
   // const userLoaded = useFetchUser(userId); // For future use when using to post comments
-  const { state, dispatch } = useContext(UserContentContext);
-  const { userPosts } = state;
+  const [error, setError] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState(""); // For showing the success message
   const [viewablePost, setViewablePost] =
     useState<ViewPost>(initialViewablePost); // For displaying the selected post modal
+  const { state, dispatch } = useContext(UserContentContext);
+  const { userPosts } = state;
   const morePosts: boolean = !(
     userId === userPosts.userId && userPosts.complete
-  );
+  ); // For checking if more posts should be loaded or not
   // For intersection observer
   const [pageNumber, setPageNumber] = useState<number>(
     userId !== userPosts.userId ? 1 : userPosts.page
@@ -79,6 +83,8 @@ const Posts: React.FC = () => {
     [dispatch]
   );
 
+  const handleAlertClose = useCallback(() => setMessage(""), []);
+
   // When the element is in view, update the page number and
   // fetch new elements
   useEffect(() => {
@@ -94,6 +100,14 @@ const Posts: React.FC = () => {
       fetchUserPosts(userId, pageNumber);
     }
   }, [userId, morePosts, fetchUserPosts, pageNumber]);
+
+  // For displaying the success message only one time
+  useEffect(() => {
+    if (location.state) {
+      setMessage(location.state.message);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const renderPosts = useCallback(
     () => (
@@ -123,7 +137,7 @@ const Posts: React.FC = () => {
           spacing={5}
         >
           {error ? (
-            <DisplayError />
+            <ErrorPage />
           ) : (
             userPosts.posts &&
             userPosts.posts.map(
@@ -132,7 +146,7 @@ const Posts: React.FC = () => {
                   ref={userPosts.posts.length === idx + 1 ? inViewRef : null}
                   key={postWithComment.post.id}
                   onClick={() => openPost(postWithComment, idx)}
-                  sx={{ maxWidth: "1200px" }}
+                  sx={{ maxWidth: "1200px", width: "100%" }}
                 >
                   <PostCard post={postWithComment} />
                 </Box>
@@ -181,10 +195,22 @@ const Posts: React.FC = () => {
     [open, handleClose, viewablePost]
   );
 
+  const renderAlert = useCallback(
+    () => (
+      <AlertMessage
+        message={message}
+        status={"success"}
+        handleClose={handleAlertClose}
+      />
+    ),
+    [message, handleAlertClose]
+  );
+
   return (
     <>
       {renderPosts()}
       {renderSinglePost()}
+      {renderAlert()}
     </>
   );
 };

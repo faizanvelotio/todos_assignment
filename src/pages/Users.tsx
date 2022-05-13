@@ -1,41 +1,24 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
-import {
-  Box,
-  Grid,
-  Typography,
-  CircularProgress,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Box, Grid, Typography, CircularProgress } from "@mui/material";
 
 import { getUsers } from "src/api/User";
 import { UserContentContext } from "src/context/UserContentContext";
 import { ActionType } from "src/types/ActionTypes";
 import UserCard from "src/components/UserCard";
 import AddUser from "src/components/AddUser";
-import DisplayError from "src/pages/DisplayError";
+import ErrorPage from "src/pages/ErrorPage";
 import { useLocation } from "react-router-dom";
-
-interface LocationProps {
-  message: string;
-}
+import AlertMessage from "src/components/AlertMessage";
 
 function Users() {
-  const location = useLocation<LocationProps>();
+  const location = useLocation<LocationPropsForMsg>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
 
   const { state, dispatch } = useContext(UserContentContext);
   const { users } = state;
-
-  useEffect(() => {
-    if (location.state) {
-      setMessage(location.state.message);
-      window.history.replaceState({}, document.title);
-    }
-  }, [location]);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -48,6 +31,8 @@ function Users() {
     }
   }, [dispatch]);
 
+  const handleAlertClose = useCallback(() => setMessage(""), []);
+
   useEffect(() => {
     if (users === null) {
       fetchUsers();
@@ -55,6 +40,14 @@ function Users() {
       setIsLoading(false);
     }
   }, [fetchUsers, users]);
+
+  // For displaying the success message only one time
+  useEffect(() => {
+    if (location.state) {
+      setMessage(location.state.message);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const renderUsers = useCallback(
     () => (
@@ -66,7 +59,7 @@ function Users() {
         }}
       >
         {error ? (
-          <DisplayError />
+          <ErrorPage />
         ) : (
           <>
             <Typography
@@ -106,24 +99,21 @@ function Users() {
     [users, error, isLoading]
   );
 
-  const renderSnackbar = useCallback(
+  const renderAlert = useCallback(
     () => (
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={Boolean(message)}
-        autoHideDuration={6000}
-        onClose={() => setMessage("")}
-      >
-        <Alert severity="success">{message}</Alert>
-      </Snackbar>
+      <AlertMessage
+        message={message}
+        status={"success"}
+        handleClose={handleAlertClose}
+      />
     ),
-    [message]
+    [message, handleAlertClose]
   );
 
   return (
     <>
       {renderUsers()}
-      {renderSnackbar()}
+      {renderAlert()}
     </>
   );
 }

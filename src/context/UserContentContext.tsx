@@ -41,7 +41,8 @@ type Action =
       type: ActionType.ADD_USER;
       payload: User;
     }
-  | { type: ActionType.UPDATE_USER; payload: User };
+  | { type: ActionType.UPDATE_USER; payload: User }
+  | { type: ActionType.ADD_POST; payload: Post };
 
 interface UserContentProviderProps {
   children: React.ReactNode;
@@ -175,6 +176,22 @@ const reducer = (state: AppState, action: Action) => {
             action.payload,
             ...users.slice(idx + 1),
           ],
+        };
+      }
+      return state;
+    case ActionType.ADD_POST:
+      if (state.userPosts.userId === action.payload.userId) {
+        let postWithComment: PostWithComment = {
+          post: action.payload,
+          comments: null,
+        };
+
+        return {
+          ...state,
+          userPosts: {
+            ...state.userPosts,
+            posts: [...state.userPosts.posts, postWithComment],
+          },
         };
       }
       return state;

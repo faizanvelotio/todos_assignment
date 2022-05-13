@@ -14,7 +14,7 @@ const TabSwitch: React.FC<TabProps> = ({ userId, currentActive }) => {
   const history = useHistory();
 
   const createPost = useCallback(
-    () => history.push(`/users/${userId}/new_post?edit=false`),
+    () => history.push(`/users/${userId}/new_post`),
     [history, userId]
   );
 

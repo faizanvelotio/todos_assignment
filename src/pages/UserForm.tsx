@@ -1,15 +1,17 @@
-import { Alert, Box, Button, Grid, Snackbar, Typography } from "@mui/material";
-import { useFormik, FormikProps } from "formik";
 import { useCallback, useContext, useEffect, useState } from "react";
+import { Box, Button, Grid, Typography } from "@mui/material";
+import { useFormik, FormikProps } from "formik";
+import { AxiosResponse } from "axios";
+import { useHistory } from "react-router-dom";
+
 import Input from "src/pages/Input";
 import getLocationId from "src/utils/getLocationId";
-import validator from "src/utils/validator";
+import AlertMessage from "src/components/AlertMessage";
 import useFetchUser from "src/utils/useFetchUser";
+import { userValidator } from "src/utils/validators";
 import { UserContentContext } from "src/context/UserContentContext";
 import { setUser, updateUser } from "src/api/User";
-import { AxiosResponse } from "axios";
 import { ActionType } from "src/types/ActionTypes";
-import { useHistory } from "react-router-dom";
 
 interface UserFormProps {
   edit: boolean;
@@ -40,44 +42,10 @@ const UserForm: React.FC<UserFormProps> = ({ edit }) => {
   const history = useHistory();
   const userId = getLocationId();
   const success = useFetchUser(userId !== -Infinity ? userId : null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>("");
+  const [disabled, setDisabled] = useState(false);
   const { state, dispatch } = useContext(UserContentContext);
   const { currentUser } = state;
-
-  const saveEditChanges = useCallback(
-    async (user: User) => {
-      try {
-        const response: AxiosResponse<User, UserWithoutID> = await updateUser(
-          user
-        );
-        dispatch({ type: ActionType.UPDATE_USER, payload: response.data });
-        history.push(`/users`, {
-          message: `${user.name}'s profile updated successfully`,
-        });
-      } catch (e) {
-        setError("Unable to update at the moment");
-      }
-    },
-    [history, dispatch]
-  );
-
-  const createUser = useCallback(
-    async (user: UserWithoutID) => {
-      try {
-        const response: AxiosResponse<User, UserWithoutID> = await setUser(
-          user
-        );
-        dispatch({ type: ActionType.ADD_USER, payload: response.data });
-        history.push("/users", {
-          message: "User created successfully!",
-        });
-      } catch (e) {
-        setError("Unable to create user");
-      }
-    },
-    [history, dispatch]
-  );
-
   const formik: FormikProps<User | UserWithoutID> = useFormik<
     User | UserWithoutID
   >({
@@ -89,10 +57,47 @@ const UserForm: React.FC<UserFormProps> = ({ edit }) => {
         createUser(values);
       }
     },
-    validationSchema: validator,
+    validationSchema: userValidator,
   });
-
   const { setValues } = formik;
+
+  const saveEditChanges = useCallback(
+    async (user: User) => {
+      try {
+        setDisabled(true);
+        const response: AxiosResponse<User, UserWithoutID> = await updateUser(
+          user
+        );
+        dispatch({ type: ActionType.UPDATE_USER, payload: response.data });
+        history.push("/users", {
+          message: `${user.name}'s profile updated successfully`,
+        });
+      } catch (e) {
+        setDisabled(false);
+        setError("Unable to update at the moment");
+      }
+    },
+    [history, dispatch]
+  );
+
+  const createUser = useCallback(
+    async (user: UserWithoutID) => {
+      try {
+        setDisabled(true);
+        const response: AxiosResponse<User, UserWithoutID> = await setUser(
+          user
+        );
+        dispatch({ type: ActionType.ADD_USER, payload: response.data });
+        history.push("/users", {
+          message: "User created successfully!",
+        });
+      } catch (e) {
+        setDisabled(false);
+        setError("Unable to create user");
+      }
+    },
+    [history, dispatch]
+  );
 
   useEffect(() => {
     if (success && edit) {
@@ -244,6 +249,7 @@ const UserForm: React.FC<UserFormProps> = ({ edit }) => {
                   width: "fit-content",
                   alignSelf: "center",
                 }}
+                disabled={disabled}
                 type="submit"
               >
                 <Typography variant="buttonText">
@@ -255,18 +261,15 @@ const UserForm: React.FC<UserFormProps> = ({ edit }) => {
         </Box>
       </Box>
     );
-  }, [edit, formik]);
+  }, [edit, disabled, formik]);
 
   const renderErrorMessage = useCallback(
     () => (
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={Boolean(error)}
-        autoHideDuration={6000}
-        onClose={() => setError(null)}
-      >
-        <Alert severity="error">{error}</Alert>
-      </Snackbar>
+      <AlertMessage
+        message={error}
+        status={"error"}
+        handleClose={() => setError("")}
+      />
     ),
     [error]
   );

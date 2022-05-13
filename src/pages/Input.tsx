@@ -1,20 +1,21 @@
 import React from "react";
-import { FormikProps } from "formik";
+import { FieldInputProps, FieldMetaProps, FormikProps } from "formik";
 import { TextField, TextFieldProps } from "@mui/material";
 
-type InputProps = {
-  formik: FormikProps<User | UserWithoutID>;
+type InputProps<T> = {
+  formik: FormikProps<T>;
   name: string;
   label: string;
 } & TextFieldProps;
 
-const Input: React.FC<InputProps> = ({ formik, name, label, ...props }) => {
-  const field = formik.getFieldProps(name);
-  const meta = formik.getFieldMeta(name);
+const Input = <T extends object>(props: InputProps<T>) => {
+  const { formik, name, label, ...rest } = props;
+  const field: FieldInputProps<T> = formik.getFieldProps(name);
+  const meta: FieldMetaProps<T> = formik.getFieldMeta(name);
 
   const configTextField: TextFieldProps = {
     ...field,
-    ...props,
+    ...rest,
     label: label,
     fullWidth: true,
     variant: "standard",
