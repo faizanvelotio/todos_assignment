@@ -92,9 +92,9 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
               fontSize: "2rem",
               marginBottom: "0.5rem",
             }}
-            children={`${user.name.split(" ")[0][0]}${
-              user.name.split(" ")[1][0]
-            }`}
+            children={`${user.name.split(" ")[0][0].toUpperCase()}${user.name
+              .split(" ")[1][0]
+              .toUpperCase()}`}
           />
           <Typography variant="body1">{user.name}</Typography>
           <Typography
