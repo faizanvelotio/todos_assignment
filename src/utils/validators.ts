@@ -3,7 +3,7 @@ import * as Yup from "yup";
 export const userValidator = Yup.object({
   name: Yup.string()
     .matches(
-      new RegExp(/^(\w)+ (\w)+$/),
+      new RegExp(/^[\w.]+ [\w ]+$/),
       "Name should contain first name and last name"
     )
     .required("Name is required."),

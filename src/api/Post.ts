@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import axios from "src/api/axiosConfig";
 
 interface PostsRequestConfig {
   params: { _page: number; _limit: number };

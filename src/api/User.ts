@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import axios from "src/api/axiosConfig";
 
 export const getUsers = (): Promise<AxiosResponse<User[]>> =>
   axios.get<User[]>("/users");
