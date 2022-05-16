@@ -154,6 +154,7 @@ const reducer = (state: AppState, action: Action) => {
         ...state.userTodos.todos[action.payload.idx],
         completed: action.payload.completed,
       };
+      console.log("from context", newState.userTodos, action.payload.completed);
       return newState;
     case ActionType.SET_USERS:
       return {

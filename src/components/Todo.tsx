@@ -25,36 +25,29 @@ const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
 
   const handleChange = useCallback(async () => {
     try {
-      setChecked(!todo.completed);
+      abortControllerRef.current.abort();
+      abortControllerRef.current = new AbortController();
+
+      setChecked((prev) => !prev);
       const response: AxiosResponse<Todos> = await toggleCompleted(
         todo.id,
         !todo.completed,
         abortControllerRef.current.signal
       );
-      if (response.statusText === "OK") {
-        dispatch({
-          type: ActionType.TOGGLE_TODO,
-          payload: { idx: idx, completed: !todo.completed },
-        });
-      }
-      abortControllerRef.current.abort();
+      dispatch({
+        type: ActionType.TOGGLE_TODO,
+        payload: { idx: idx, completed: response.data.completed },
+      });
     } catch (e: any) {
       if (e.message === "canceled") {
-        setChecked(todo.completed);
+        setChecked((prev) => !prev);
       }
     }
-  }, [todo, idx, dispatch]);
+  }, [todo.completed, todo.id, idx, dispatch]);
 
   useEffect(() => {
     setChecked(todo.completed);
   }, [todo.completed]);
-
-  useEffect(() => {
-    const controller: AbortController = abortControllerRef.current;
-    return () => {
-      controller.abort();
-    };
-  }, []);
 
   const renderTodo = useCallback(
     () => (

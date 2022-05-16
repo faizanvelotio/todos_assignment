@@ -18,7 +18,6 @@ const UserTodos: React.FC = () => {
   const userId: number = getLocationId();
   const { state, dispatch } = useContext(UserContentContext);
   const { userTodos } = state;
-
   const moreTodos: boolean = useMemo(
     () => !(userId === userTodos.userId && userTodos.complete),
     [userId, userTodos.userId, userTodos.complete]
@@ -146,7 +145,7 @@ const UserTodos: React.FC = () => {
         )}
       </Box>
     );
-  }, [userTodos, inViewRef, theme, error, userId]);
+  }, [userTodos.complete, userTodos.todos, inViewRef, theme, error, userId]);
 
   return renderUserTodos();
 };
