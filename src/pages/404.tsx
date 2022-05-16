@@ -6,32 +6,37 @@ const NotFound: React.FC = () => {
   const history = useHistory();
   const backToHome = useCallback(() => history.push("/"), [history]);
 
-  return (
-    <Box
-      sx={{
-        padding: "4rem 2.5% 1rem 2.5%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <Typography variant="pageHeading">404 - Page Not Found</Typography>
-      <Button
-        variant="contained"
+  const render404Page = useCallback(
+    () => (
+      <Box
         sx={{
-          color: "#ffffff",
-          fontWeight: "bold",
-          width: "fit-content",
-          letterSpacing: "0.1rem",
-          padding: "1rem",
-          marginTop: "3rem",
+          padding: "4rem 2.5% 1rem 2.5%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
-        onClick={backToHome}
       >
-        <Typography variant="buttonText">Back to home</Typography>
-      </Button>
-    </Box>
+        <Typography variant="pageHeading">404 - Page Not Found</Typography>
+        <Button
+          variant="contained"
+          sx={{
+            color: "#ffffff",
+            fontWeight: "bold",
+            width: "fit-content",
+            letterSpacing: "0.1rem",
+            padding: "1rem",
+            marginTop: "3rem",
+          }}
+          onClick={backToHome}
+        >
+          <Typography variant="buttonText">Back to home</Typography>
+        </Button>
+      </Box>
+    ),
+    [backToHome]
   );
+
+  return render404Page();
 };
 
 export default NotFound;

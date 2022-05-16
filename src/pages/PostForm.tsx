@@ -4,7 +4,7 @@ import { Box, Typography, Stack, Button } from "@mui/material";
 import { AxiosResponse } from "axios";
 import { useHistory } from "react-router-dom";
 
-import Input from "src/pages/Input";
+import Input from "src/components/Input";
 import getLocationId from "src/utils/getLocationId";
 import AlertMessage from "src/components/AlertMessage";
 import { UserContentContext } from "src/context/UserContentContext";

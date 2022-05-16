@@ -7,7 +7,7 @@ import { AxiosResponse } from "axios";
 import { ActionType } from "src/types/ActionTypes";
 import AlertMessage from "src/components/AlertMessage";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import Input from "src/pages/Input";
+import Input from "src/components/Input";
 
 interface CommentInputProps {
   postId: number;

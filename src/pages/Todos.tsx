@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AxiosResponse } from "axios";
 import { useTheme } from "@mui/material/styles";
 import { useInView } from "react-intersection-observer";
@@ -19,8 +19,9 @@ const UserTodos: React.FC = () => {
   const { state, dispatch } = useContext(UserContentContext);
   const { userTodos } = state;
 
-  const moreTodos: boolean = !(
-    userId === userTodos.userId && userTodos.complete
+  const moreTodos: boolean = useMemo(
+    () => !(userId === userTodos.userId && userTodos.complete),
+    [userId, userTodos.userId, userTodos.complete]
   );
 
   // For intersection observer

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AxiosResponse } from "axios";
 import { useInView } from "react-intersection-observer";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
@@ -30,21 +30,23 @@ const initialViewablePost: ViewPost = {
 
 const Posts: React.FC = () => {
   const location = useLocation<LocationPropsForMsg>();
-  const userId: number = getLocationId(); // Get the id parameter for URL
-  const userLoaded = useFetchUser(userId); // Loads the user data if not present in state
+  const userId: number = getLocationId();
+  const userLoaded = useFetchUser(userId);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
   const [alertInfo, setAlertInfo] = useState<AlertInfo>({
     status: "success",
     message: "",
-  }); // For showing message
+  });
   const [viewablePost, setViewablePost] =
-    useState<ViewPost>(initialViewablePost); // For displaying the selected post modal
+    useState<ViewPost>(initialViewablePost);
   const { state, dispatch } = useContext(UserContentContext);
   const { userPosts } = state;
-  const morePosts: boolean = !(
-    userId === userPosts.userId && userPosts.complete
-  ); // For checking if more posts should be loaded or not
+  const morePosts: boolean = useMemo(
+    () => !(userId === userPosts.userId && userPosts.complete),
+    [userId, userPosts.userId, userPosts.complete]
+  );
+
   // For intersection observer
   const [pageNumber, setPageNumber] = useState<number>(
     userId !== userPosts.userId ? 1 : userPosts.page
@@ -73,6 +75,11 @@ const Posts: React.FC = () => {
     setOpen(false);
   }, []);
 
+  const handleAlertClose = useCallback(
+    () => setAlertInfo({ status: "success", message: "" }),
+    []
+  );
+
   const fetchUserPosts = useCallback(
     async (userId: number, pageNumber: number) => {
       try {
@@ -94,11 +101,6 @@ const Posts: React.FC = () => {
       }
     },
     [dispatch]
-  );
-
-  const handleAlertClose = useCallback(
-    () => setAlertInfo({ status: "success", message: "" }),
-    []
   );
 
   // When the element is in view, update the page number and

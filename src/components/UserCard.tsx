@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Avatar,
@@ -21,7 +21,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const history = useHistory();
   const { dispatch } = useContext(UserContentContext);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
 
   const handleUserClick = useCallback(
     (user: User) => {

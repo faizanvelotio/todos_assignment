@@ -1,5 +1,5 @@
 import { Snackbar, Alert } from "@mui/material";
-import React from "react";
+import React, { useCallback } from "react";
 
 interface AlertProps {
   status: "success" | "error";
@@ -12,16 +12,21 @@ const AlertMessage: React.FC<AlertProps> = ({
   handleClose,
   status,
 }) => {
-  return (
-    <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      open={Boolean(message)}
-      autoHideDuration={6000}
-      onClose={handleClose}
-    >
-      <Alert severity={status}>{message}</Alert>
-    </Snackbar>
+  const renderAlertMessage = useCallback(
+    () => (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={Boolean(message)}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert severity={status}>{message}</Alert>
+      </Snackbar>
+    ),
+    [message, handleClose, status]
   );
+
+  return renderAlertMessage();
 };
 
 export default AlertMessage;
