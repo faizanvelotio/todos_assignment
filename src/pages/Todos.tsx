@@ -58,7 +58,7 @@ const UserTodos: React.FC = () => {
     if (inView && !userTodos.complete) {
       setPageNumber((prev) => prev + 1);
     }
-  }, [inView, userTodos]);
+  }, [inView, userTodos.complete]);
 
   useEffect(() => {
     // If the todos in the state is of different user, then update the state,

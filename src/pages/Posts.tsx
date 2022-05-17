@@ -109,7 +109,7 @@ const Posts: React.FC = () => {
     if (inView && !userPosts.complete) {
       setPageNumber((prev) => prev + 1);
     }
-  }, [inView, userPosts]);
+  }, [inView, userPosts.complete]);
 
   // Fetch the userposts if a new user is there or still some update
   // page number is to be loaded
