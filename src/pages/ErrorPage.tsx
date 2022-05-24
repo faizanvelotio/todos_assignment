@@ -9,49 +9,44 @@ interface ErrorProps {
 const ErrorPage: React.FC<ErrorProps> = ({ message = "Error" }) => {
   const reload = useCallback(() => window.location.reload(), []);
 
-  const renderDisplayError = useCallback(
-    () => (
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+      }}
+    >
+      <Box>
+        <ErrorIcon sx={{ fontSize: 100, color: "error.light" }} />
+      </Box>
       <Box
+        my={2}
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
+          fontFamily: "Open Sans",
+          fontSize: "2rem",
+          fontWeight: "bold",
         }}
       >
-        <Box>
-          <ErrorIcon sx={{ fontSize: 100, color: "error.light" }} />
-        </Box>
-        <Box
-          sx={{
-            fontFamily: "Open Sans",
-            fontSize: "2rem",
-            margin: "1rem 0",
-            fontWeight: "bold",
-          }}
-        >
-          {message}
-        </Box>
-        <Button
-          variant="contained"
-          sx={{
-            color: "#ffffff",
-            fontWeight: "bold",
-            width: "fit-content",
-            letterSpacing: "0.1rem",
-            padding: "1rem",
-            marginTop: "2rem",
-          }}
-          onClick={reload}
-        >
-          <Typography variant="buttonText">Try again</Typography>
-        </Button>
+        {message}
       </Box>
-    ),
-    [reload, message]
+      <Button
+        variant="contained"
+        sx={{
+          color: "background.paper",
+          fontWeight: "bold",
+          width: "fit-content",
+          letterSpacing: "0.1rem",
+          p: 2,
+          mt: 4,
+        }}
+        onClick={reload}
+      >
+        <Typography variant="buttonText">Try again</Typography>
+      </Button>
+    </Box>
   );
-
-  return renderDisplayError();
 };
 
 export default ErrorPage;

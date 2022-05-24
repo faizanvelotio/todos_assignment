@@ -131,28 +131,25 @@ const Posts: React.FC = () => {
     () => (
       <Box
         sx={{
-          padding: "1rem 2.5%",
+          py: 2,
+          px: "2.5%",
           display: "flex",
           flexDirection: "column",
         }}
       >
         <TabSwitch userId={userId} currentActive={"posts"} />
-
-        <Typography
-          variant="pageHeading"
-          sx={{ marginLeft: "auto", marginRight: "auto" }}
-        >
+        <Typography variant="pageHeading" m="auto">
           Posts
         </Typography>
         <Stack
+          mt={4}
+          spacing={5}
           sx={{
-            marginTop: "2rem",
             display: "flex",
             justifyContent: "center",
             flexDirection: "column",
             alignItems: "center",
           }}
-          spacing={5}
         >
           {error ? (
             <ErrorPage />
@@ -167,7 +164,8 @@ const Posts: React.FC = () => {
                       }
                       key={postWithComment.post.id}
                       onClick={() => openPost(postWithComment, idx)}
-                      sx={{ maxWidth: "1200px", width: "100%" }}
+                      maxWidth={"lg"}
+                      width={1}
                     >
                       <PostCard post={postWithComment} />
                     </Box>
@@ -175,9 +173,9 @@ const Posts: React.FC = () => {
                 )}
               {!userPosts.complete && (
                 <Box
+                  my={4}
                   sx={{
                     display: "flex",
-                    margin: "2rem 0",
                     justifyContent: "center",
                   }}
                 >
@@ -185,14 +183,8 @@ const Posts: React.FC = () => {
                 </Box>
               )}
               {userPosts.complete && userPosts.posts.length === 0 && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    margin: "2rem 0",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Box my={4} display={"flex"} justifyContent={"center"}>
+                  <Typography variant="body1" fontWeight={"bold"}>
                     NO POSTS CREATED
                   </Typography>
                 </Box>

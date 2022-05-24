@@ -18,41 +18,36 @@ const TabSwitch: React.FC<TabProps> = ({ userId, currentActive }) => {
     [history, userId]
   );
 
-  const renderTabSwitch = useCallback(
-    () => (
-      <Grid container spacing={1}>
-        <Grid item xs={4} md={3} lg={2}>
-          <TabButton
-            active={currentActive === "posts"}
-            text="Posts"
-            url={`/users/${userId}/posts`}
-          />
-        </Grid>
-
-        <Grid item xs={4} md={3} lg={2}>
-          <TabButton
-            active={currentActive === "todos"}
-            text="Todos"
-            url={`/users/${userId}/todos`}
-          />
-        </Grid>
-
-        {currentActive === "posts" && (
-          <IconButton
-            sx={{
-              marginLeft: "auto",
-            }}
-            onClick={createPost}
-          >
-            <AddIcon sx={{ fontSize: 50, color: "primary.main" }} />
-          </IconButton>
-        )}
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={4} md={3} lg={2}>
+        <TabButton
+          active={currentActive === "posts"}
+          text="Posts"
+          url={`/users/${userId}/posts`}
+        />
       </Grid>
-    ),
-    [createPost, currentActive, userId]
-  );
 
-  return renderTabSwitch();
+      <Grid item xs={4} md={3} lg={2}>
+        <TabButton
+          active={currentActive === "todos"}
+          text="Todos"
+          url={`/users/${userId}/todos`}
+        />
+      </Grid>
+
+      {currentActive === "posts" && (
+        <IconButton
+          sx={{
+            marginLeft: "auto",
+          }}
+          onClick={createPost}
+        >
+          <AddIcon sx={{ fontSize: 50, color: "primary.main" }} />
+        </IconButton>
+      )}
+    </Grid>
+  );
 };
 
 export default TabSwitch;

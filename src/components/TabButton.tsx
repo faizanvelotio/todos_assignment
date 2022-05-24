@@ -1,5 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 interface TabButtonProps {
@@ -17,37 +17,38 @@ const TabButton: React.FC<TabButtonProps> = ({ active, text, url }) => {
     }
   }, [active, history, url]);
 
-  const renderTabButton = useCallback(() => {
-    const styles = active
-      ? {
-          bgcolor: "primary.main",
-          color: "background.paper",
-          "&:hover": {
+  const styles = useMemo(
+    () =>
+      active
+        ? {
             bgcolor: "primary.main",
-            cursor: "not-allowed",
+            color: "background.paper",
+            "&:hover": {
+              bgcolor: "primary.main",
+              cursor: "not-allowed",
+            },
+          }
+        : {
+            color: "primary.main",
           },
-        }
-      : {
-          color: "primary.main",
-        };
-    return (
-      <Button
-        variant="outlined"
-        sx={{
-          ...styles,
-          fontWeight: "bold",
-          borderRadius: 0,
-          width: "100%",
-          height: "3rem",
-        }}
-        onClick={handleClick}
-      >
-        <Typography variant="buttonText">{text}</Typography>
-      </Button>
-    );
-  }, [handleClick, text, active]);
+    [active]
+  );
 
-  return renderTabButton();
+  return (
+    <Button
+      variant="outlined"
+      sx={{
+        ...styles,
+        fontWeight: "bold",
+        borderRadius: 0,
+        width: 1,
+        height: 50,
+      }}
+      onClick={handleClick}
+    >
+      <Typography variant="buttonText">{text}</Typography>
+    </Button>
+  );
 };
 
 export default TabButton;

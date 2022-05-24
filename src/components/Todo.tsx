@@ -54,10 +54,11 @@ const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
       <Paper
         elevation={checked ? 2 : 4}
         sx={{
-          padding: "1.5rem 3%",
+          py: 3,
+          px: "3%",
           position: "relative",
           cursor: "pointer",
-          bgcolor: checked ? "#FAFAFA" : "background.paper",
+          bgcolor: checked ? "lightGrayBG" : "background.paper",
         }}
         onClick={handleChange}
       >
@@ -70,7 +71,7 @@ const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
           <Typography
             component="div"
             sx={{
-              width: "90%",
+              width: 0.9,
               textDecoration: checked ? "line-through" : null,
               userSelect: "none",
             }}

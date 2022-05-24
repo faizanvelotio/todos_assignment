@@ -10,10 +10,10 @@ import {
   DialogTitle,
   Divider,
   Stack,
+  Theme,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { getPostComments } from "src/api/Post";
 import { ActionType } from "src/types/ActionTypes";
 import { UserContentContext } from "src/context/UserContentContext";
@@ -28,8 +28,9 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const fullScreen = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm")
+  );
   const [error, setError] = useState(false);
   const { state, dispatch } = useContext(UserContentContext);
   const { currentUser } = state;
@@ -60,14 +61,7 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
 
   const renderPost = useCallback(
     () => (
-      <Dialog
-        fullWidth={true}
-        maxWidth={"md"}
-        open={open}
-        onClose={handleClose}
-        fullScreen={fullScreen}
-        scroll={"body"}
-      >
+      <>
         <DialogTitle>
           <Typography
             variant="postHeading"
@@ -84,12 +78,12 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
           <Typography variant="body1">{post.post.body}</Typography>
           <Box className="post-comment-section" component={"section"} mt={3}>
             <Box
+              mb={2}
               sx={{
                 fontFamily: "'Open Sans Condensed'",
                 fontWeight: "bolder",
                 fontSize: "1.5rem",
                 letterSpacing: "0.05rem",
-                marginBottom: "1rem",
               }}
             >
               Comments
@@ -127,11 +121,11 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
               </Stack>
             ) : (
               <Box
+                mx="auto"
                 sx={{
                   color: "error.light",
                   fontWeight: "bold",
                   width: "fit-content",
-                  margin: "0 auto",
                 }}
               >
                 Sorry! Unable to fetch comments
@@ -139,19 +133,30 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
             )}
           </Box>
         </DialogContent>
-        {fullScreen && (
-          <DialogActions>
-            <Button onClick={handleClose}>
-              <Typography color={"primary.main"}>Close</Typography>
-            </Button>
-          </DialogActions>
-        )}
-      </Dialog>
+      </>
     ),
-    [open, post, index, error, email, fullScreen, handleClose]
+    [post, index, error, email]
   );
 
-  return renderPost();
+  return (
+    <Dialog
+      fullWidth={true}
+      maxWidth={"md"}
+      open={open}
+      onClose={handleClose}
+      fullScreen={fullScreen}
+      scroll={"body"}
+    >
+      {renderPost()}
+      {fullScreen && (
+        <DialogActions>
+          <Button onClick={handleClose}>
+            <Typography color={"primary.main"}>Close</Typography>
+          </Button>
+        </DialogActions>
+      )}
+    </Dialog>
+  );
 };
 
 export default Post;

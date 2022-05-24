@@ -48,67 +48,45 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
     history.push(`users/${user.id}`);
   }, [history, dispatch, user]);
 
-  const renderUserCard = useCallback(
+  const renderUserInfo = useCallback(
     () => (
-      <Paper
-        elevation={4}
+      <Box
+        mx={"auto"}
         sx={{
-          padding: "1rem 2.5%",
-          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "fit-content",
+          cursor: "pointer",
         }}
+        onClick={() => handleUserClick(user)}
       >
-        <IconButton
-          aria-label="settings"
-          aria-controls={open ? "account-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleSettingsClick}
+        <Avatar
           sx={{
-            position: "absolute",
-            right: "10px",
-            top: "10px",
+            bgcolor: "primary.main",
+            fontWeight: "bold",
+            width: 80,
+            height: 80,
+            fontSize: "2rem",
+            mb: 1,
+          }}
+          children={`${user.name.split(" ")[0][0].toUpperCase()}${user.name
+            .split(" ")[1][0]
+            .toUpperCase()}`}
+        />
+        <Typography variant="body1">{user.name}</Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            color: "fontLightGray",
           }}
         >
-          <MoreVertIcon />
-        </IconButton>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "fit-content",
-            cursor: "pointer",
-            margin: "0 auto",
-          }}
-          onClick={() => handleUserClick(user)}
-        >
-          <Avatar
-            sx={{
-              bgcolor: "primary.main",
-              fontWeight: "bold",
-              width: "80px",
-              height: "80px",
-              fontSize: "2rem",
-              marginBottom: "0.5rem",
-            }}
-            children={`${user.name.split(" ")[0][0]}${
-              user.name.split(" ")[1][0]
-            }`}
-          />
-          <Typography variant="body1">{user.name}</Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: "#A8A8A8",
-            }}
-          >
-            {user.username}
-          </Typography>
-        </Box>
-      </Paper>
+          {user.username}
+        </Typography>
+      </Box>
     ),
-    [open, user, handleSettingsClick, handleUserClick]
+    [user, handleUserClick]
   );
 
   const renderMenu = useCallback(
@@ -123,7 +101,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
           elevation: 0,
           sx: {
             overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            filter: "drop-shadow(0px 2px 8px #00000051)",
             mt: 1.5,
             "&:before": {
               content: '""',
@@ -144,11 +122,11 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
       >
         <MenuItem>
           <Box
-            style={{
+            sx={{
               fontSize: "1rem",
               fontFamily: "Roboto, sans-serif",
               letterSpacing: "0.05rem",
-              width: "100px",
+              width: 100,
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -162,9 +140,34 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
     ),
     [open, anchorEl, editUser, handleSettingsClose]
   );
+
   return (
     <>
-      {renderUserCard()}
+      <Paper
+        elevation={4}
+        sx={{
+          px: "2.5%",
+          py: 2,
+          position: "relative",
+        }}
+      >
+        <IconButton
+          aria-label="settings"
+          aria-controls={open ? "account-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleSettingsClick}
+          sx={{
+            position: "absolute",
+            right: 10,
+            top: 10,
+          }}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        {renderUserInfo()}
+      </Paper>
+
       {renderMenu()}
     </>
   );

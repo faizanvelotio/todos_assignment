@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import React from "react";
 import AlegreyaMedium from "src/assets/fonts/Alegreya-Medium.ttf";
 import OpenSans from "src/assets/fonts/OpenSans-Regular.ttf";
 import OpenSansCondensed from "src/assets/fonts/OpenSans_Condensed-SemiBold.ttf";
@@ -9,6 +10,8 @@ declare module "@mui/material/styles" {
     pageHeading: React.CSSProperties;
     mainPageBody: React.CSSProperties;
     buttonText: React.CSSProperties;
+    commentTitle: React.CSSProperties;
+    commentBody: React.CSSProperties;
   }
 
   interface TypographyVariantsOptions {
@@ -16,6 +19,22 @@ declare module "@mui/material/styles" {
     pageHeading?: React.CSSProperties;
     mainPageBody?: React.CSSProperties;
     buttonText?: React.CSSProperties;
+    commentTitle?: React.CSSProperties;
+    commentBody?: React.CSSProperties;
+  }
+
+  interface Palette {
+    fontGray: React.CSSProperties["color"];
+    fontLightGray: React.CSSProperties["color"];
+    lightGrayBG: React.CSSProperties["color"];
+    lightBorderLine: React.CSSProperties["color"];
+  }
+
+  interface PaletteOptions {
+    fontGray: React.CSSProperties["color"];
+    fontLightGray: React.CSSProperties["color"];
+    lightGrayBG: React.CSSProperties["color"];
+    lightBorderLine: React.CSSProperties["color"];
   }
 }
 
@@ -25,6 +44,8 @@ declare module "@mui/material/Typography" {
     pageHeading: true;
     mainPageBody: true;
     buttonText: true;
+    commentTitle: true;
+    commentBody: true;
   }
 }
 
@@ -36,6 +57,10 @@ const theme = createTheme({
     secondary: {
       main: "#015249", // Forest
     },
+    fontGray: "#393D46",
+    fontLightGray: "#A8A8A8",
+    lightGrayBG: "#FAFAFA",
+    lightBorderLine: "#E0E0E0",
   },
   typography: {
     fontFamily: [
@@ -51,6 +76,15 @@ const theme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(","),
+    commentTitle: {
+      fontFamily: "'Open Sans Condensed', sans-serif",
+      fontSize: "1.2rem",
+      lineHeight: "1.5rem",
+    },
+    commentBody: {
+      fontSize: "0.8rem",
+      lineHeight: "1.1rem",
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -85,7 +119,7 @@ const theme = createTheme({
 
 theme.typography.pageHeading = {
   fontFamily: "Alegreya, Arial, serif",
-  color: "#393D46",
+  color: theme.palette.fontGray,
   [theme.breakpoints.up("lg")]: {
     fontSize: "4.5rem",
     lineHeight: "4rem",
@@ -102,7 +136,7 @@ theme.typography.pageHeading = {
 
 theme.typography.postHeading = {
   fontFamily: "'Open Sans Condensed', sans-serif",
-  color: "#393D46",
+  color: theme.palette.fontGray,
   [theme.breakpoints.up("md")]: {
     fontSize: "2.5rem",
     lineHeight: "3rem",
@@ -115,7 +149,7 @@ theme.typography.postHeading = {
 
 theme.typography.body1 = {
   fontFamily: "'Open Sans', san-serif",
-  color: "#393D46",
+  color: theme.palette.fontGray,
   [theme.breakpoints.up("xl")]: {
     fontSize: "1.6rem",
     lineHeight: "2rem",

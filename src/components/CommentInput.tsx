@@ -81,9 +81,10 @@ const CommentInput: React.FC<CommentInputProps> = ({
     () => (
       <Box
         sx={{
-          padding: "1rem",
-          border: "1px solid lightgray",
-          borderRadius: "5px",
+          p: 2,
+          border: 1,
+          borderColor: "lightBorderLine",
+          borderRadius: 2,
           "&:focus-within": {
             borderColor: "primary.main",
           },
@@ -103,8 +104,9 @@ const CommentInput: React.FC<CommentInputProps> = ({
             <Button
               variant="contained"
               sx={{
-                margin: "1rem auto",
-                color: "#ffffff",
+                mx: "auto",
+                my: 2,
+                color: "background.paper",
                 fontWeight: "bold",
                 width: "fit-content",
                 alignSelf: "flex-end",

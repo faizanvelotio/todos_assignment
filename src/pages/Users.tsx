@@ -51,30 +51,15 @@ function Users() {
 
   const renderUsers = useCallback(
     () => (
-      <Box
-        sx={{
-          padding: "1rem 2.5%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <Box py={2} px={"2.5%"} display={"flex"} flexDirection={"column"}>
         {error ? (
           <ErrorPage />
         ) : (
           <>
-            <Typography
-              variant="pageHeading"
-              sx={{ marginLeft: "auto", marginRight: "auto" }}
-            >
+            <Typography variant="pageHeading" m={"auto"}>
               Users
             </Typography>
-            <Box
-              sx={{
-                marginTop: "2rem",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+            <Box mt={4} display={"flex"} justifyContent={"center"}>
               {isLoading ? (
                 <CircularProgress />
               ) : (

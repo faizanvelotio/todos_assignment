@@ -11,29 +11,25 @@ const Navbar = () => {
     history.push("/");
   }, [history]);
 
-  const renderNavbar = useCallback(
-    () => (
-      <Box
-        sx={{
-          width: "100%",
-          height: "10vh",
-          display: "flex",
-          justifyContent: "center",
-          borderBottom: "1px solid #e0e0e0",
-        }}
-      >
-        <img
-          src={logo}
-          alt="Posts and Todos Logo"
-          style={{ cursor: "pointer", height: "auto" }}
-          onClick={() => goToHome()}
-        ></img>
-      </Box>
-    ),
-    [goToHome]
+  return (
+    <Box
+      sx={{
+        width: 1,
+        height: "10vh",
+        display: "flex",
+        justifyContent: "center",
+        borderBottom: 1,
+        borderColor: "lightBorderLine",
+      }}
+    >
+      <img
+        src={logo}
+        alt="Posts and Todos Logo"
+        style={{ cursor: "pointer", height: "auto" }}
+        onClick={goToHome}
+      ></img>
+    </Box>
   );
-
-  return renderNavbar();
 };
 
 export default Navbar;

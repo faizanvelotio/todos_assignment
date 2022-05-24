@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 import { FieldInputProps, FieldMetaProps, FormikProps } from "formik";
 import { TextField, TextFieldProps } from "@mui/material";
 
@@ -20,6 +20,12 @@ const Input = <T extends object>(props: InputProps<T>) => {
       label: label,
       fullWidth: true,
       variant: "standard",
+      InputLabelProps: {
+        style: {
+          textTransform: "uppercase",
+          fontFamily: "'Open Sans Condensed', sans-serif",
+        },
+      },
     }),
     [field, rest, label]
   );
@@ -29,25 +35,7 @@ const Input = <T extends object>(props: InputProps<T>) => {
     configTextField.helperText = meta.error;
   }
 
-  const renderInput = useCallback(
-    () => (
-      <TextField
-        sx={{
-          ".MuiInputLabel-root": {
-            textTransform: "uppercase",
-            fontFamily: "'Open Sans Condensed', sans-serif",
-          },
-          ".MuiInputBase-root": {
-            borderBottom: "1px solid rgba(233, 237, 242, 0.1)",
-          },
-        }}
-        {...configTextField}
-      />
-    ),
-    [configTextField]
-  );
-
-  return renderInput();
+  return <TextField {...configTextField} />;
 };
 
 export default Input;

@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AxiosResponse } from "axios";
-import { useTheme } from "@mui/material/styles";
 import { useInView } from "react-intersection-observer";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 
@@ -14,7 +13,6 @@ import Todo from "src/components/Todo";
 
 const UserTodos: React.FC = () => {
   const [error, setError] = useState(false);
-  const theme = useTheme();
   const userId: number = getLocationId();
   const { state, dispatch } = useContext(UserContentContext);
   const { userTodos } = state;
@@ -70,84 +68,67 @@ const UserTodos: React.FC = () => {
 
   const renderUserTodos = useCallback((): JSX.Element => {
     return (
-      <Box
+      <Stack
         sx={{
-          padding: "1rem 2.5%",
           display: "flex",
+          justifyContent: "center",
           flexDirection: "column",
+          alignItems: "center",
         }}
+        spacing={5}
       >
-        <TabSwitch userId={userId} currentActive={"todos"} />
-        {error ? (
-          <ErrorPage />
-        ) : (
-          <>
-            <Typography
-              variant="pageHeading"
-              sx={{ margin: "1rem auto 2rem auto" }}
+        {userTodos.todos &&
+          userTodos.todos.map((todo: Todos, idx: number) => (
+            <Box
+              ref={userTodos.todos.length === idx + 1 ? inViewRef : null}
+              key={todo.id}
+              onClick={() => {}}
+              sx={(theme) => ({
+                width: {
+                  xs: 1,
+                  sm: theme.breakpoints.values.sm,
+                  md: theme.breakpoints.values.md,
+                  lg: theme.breakpoints.values.lg,
+                },
+              })}
             >
-              Todos
-            </Typography>
-            <Stack
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-              spacing={5}
-            >
-              {userTodos.todos &&
-                userTodos.todos.map((todo: Todos, idx: number) => (
-                  <Box
-                    ref={userTodos.todos.length === idx + 1 ? inViewRef : null}
-                    key={todo.id}
-                    onClick={() => {}}
-                    width={{
-                      xs: "100%",
-                      sm: theme.breakpoints.values.sm,
-                      md: theme.breakpoints.values.md,
-                      lg: theme.breakpoints.values.lg,
-                    }}
-                  >
-                    <Todo todo={todo} idx={idx} />
-                  </Box>
-                ))}
-              {!userTodos.complete && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    margin: "2rem 0",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CircularProgress />
-                </Box>
-              )}
-              {userTodos.complete && userTodos.todos.length === 0 && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    margin: "2rem 0",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    <Box sx={{ fontStyle: "italic" }} component="span">
-                      Chillaaax!
-                    </Box>{" "}
-                    NOTHING TODO
-                  </Typography>
-                </Box>
-              )}
-            </Stack>
-          </>
+              <Todo todo={todo} idx={idx} />
+            </Box>
+          ))}
+        {!userTodos.complete && (
+          <Box my={4} display={"flex"} justifyContent={"center"}>
+            <CircularProgress />
+          </Box>
         )}
-      </Box>
+        {userTodos.complete && userTodos.todos.length === 0 && (
+          <Box my={4} display={"flex"} justifyContent={"center"}>
+            <Typography variant="body1" fontWeight={"bold"}>
+              <Box fontStyle={"italic"} component="span">
+                Chillaaax!
+              </Box>{" "}
+              NOTHING TODO
+            </Typography>
+          </Box>
+        )}
+      </Stack>
     );
-  }, [userTodos.complete, userTodos.todos, inViewRef, theme, error, userId]);
+  }, [userTodos.complete, userTodos.todos, inViewRef]);
 
-  return renderUserTodos();
+  return (
+    <Box py={2} px={"2.5%"} display={"flex"} flexDirection={"column"}>
+      <TabSwitch userId={userId} currentActive={"todos"} />
+      {error ? (
+        <ErrorPage />
+      ) : (
+        <>
+          <Typography variant="pageHeading" mt={2} mb={4} mx={"auto"}>
+            Todos
+          </Typography>
+          {renderUserTodos()}
+        </>
+      )}
+    </Box>
+  );
 };
 
 export default UserTodos;

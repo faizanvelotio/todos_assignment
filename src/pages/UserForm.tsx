@@ -112,154 +112,103 @@ const UserForm: React.FC<UserFormProps> = ({ edit }) => {
       letterSpacing: "0.05rem",
       color: "primary.main",
     };
+
     return (
-      <Box
-        sx={{
-          padding: "1rem 2.5%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Typography
-          variant="pageHeading"
-          sx={{ marginLeft: "auto", marginRight: "auto" }}
+      <form onSubmit={formik.handleSubmit}>
+        <Grid
+          container
+          columnSpacing={{ sm: 2, md: 3, lg: 8 }}
+          rowSpacing={{ xs: 2, lg: 3 }}
         >
-          {edit ? "Edit User" : "Create User"}
-        </Typography>
-        <Box
-          width={{
-            lg: "1200px",
-            md: "800px",
-            sm: "600px",
-            xs: "90%",
-          }}
-          sx={{
-            display: "flex",
-            alignItem: "center",
-            justifyContent: "center",
-            alignSelf: "center",
-            marginTop: "1.5rem",
-          }}
-        >
-          <form onSubmit={formik.handleSubmit}>
-            <Grid
-              container
-              columnSpacing={{ sm: 2, md: 3, lg: 8 }}
-              rowSpacing={{ xs: 2, lg: 3 }}
+          <Grid item xs={12}>
+            <Typography sx={{ ...subHeadingStyles }}>
+              Personal Details
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Name" name="name" required={true} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input
+              formik={formik}
+              label="Username"
+              name="username"
+              required={true}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Email" name="email" required={true} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Phone" name="phone" required={true} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Website" name="website" />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography
+              sx={{
+                ...subHeadingStyles,
+                marginTop: "1rem",
+              }}
             >
-              <Grid item xs={12}>
-                <Typography sx={{ ...subHeadingStyles }}>
-                  Personal Details
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input
-                  formik={formik}
-                  label="Name"
-                  name="name"
-                  required={true}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input
-                  formik={formik}
-                  label="Username"
-                  name="username"
-                  required={true}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input
-                  formik={formik}
-                  label="Email"
-                  name="email"
-                  required={true}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input
-                  formik={formik}
-                  label="Phone"
-                  name="phone"
-                  required={true}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input formik={formik} label="Website" name="website" />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography
-                  sx={{
-                    ...subHeadingStyles,
-                    marginTop: "1rem",
-                  }}
-                >
-                  Company Details
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input
-                  formik={formik}
-                  label="Company Name"
-                  name="company.name"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input
-                  formik={formik}
-                  label="CatchPhrase"
-                  name="company.catchPhrase"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Input
-                  formik={formik}
-                  label="Business Slogan"
-                  name="company.bs"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography
-                  sx={{
-                    ...subHeadingStyles,
-                    marginTop: "1rem",
-                  }}
-                >
-                  Address
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input formik={formik} label="Street" name="address.street" />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input formik={formik} label="Suite" name="address.suite" />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input formik={formik} label="City" name="address.city" />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input formik={formik} label="Zipcode" name="address.zipcode" />
-              </Grid>
-              <Button
-                variant="contained"
-                sx={{
-                  margin: "3rem auto",
-                  color: "#ffffff",
-                  fontWeight: "bold",
-                  width: "fit-content",
-                  alignSelf: "center",
-                }}
-                disabled={disabled}
-                type="submit"
-              >
-                <Typography variant="buttonText">
-                  {edit ? "Save Changes" : "Submit"}
-                </Typography>
-              </Button>
-            </Grid>
-          </form>
-        </Box>
-      </Box>
+              Company Details
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Company Name" name="company.name" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input
+              formik={formik}
+              label="CatchPhrase"
+              name="company.catchPhrase"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Input formik={formik} label="Business Slogan" name="company.bs" />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography
+              sx={{
+                ...subHeadingStyles,
+                marginTop: "1rem",
+              }}
+            >
+              Address
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Street" name="address.street" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Suite" name="address.suite" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="City" name="address.city" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input formik={formik} label="Zipcode" name="address.zipcode" />
+          </Grid>
+          <Button
+            variant="contained"
+            sx={{
+              my: 6,
+              mx: "auto",
+              color: "background.paper",
+              fontWeight: "bold",
+              width: "fit-content",
+              alignSelf: "center",
+            }}
+            disabled={disabled}
+            type="submit"
+          >
+            <Typography variant="buttonText">
+              {edit ? "Save Changes" : "Submit"}
+            </Typography>
+          </Button>
+        </Grid>
+      </form>
     );
   }, [edit, disabled, formik]);
 
@@ -276,7 +225,29 @@ const UserForm: React.FC<UserFormProps> = ({ edit }) => {
 
   return (
     <>
-      {renderUserForm()}
+      <Box py={2} px={"2.5%"} display={"flex"} flexDirection={"column"}>
+        <Typography variant="pageHeading" m={"auto"}>
+          {edit ? "Edit User" : "Create User"}
+        </Typography>
+        <Box
+          mt={3}
+          sx={(theme) => ({
+            display: "flex",
+            alignItem: "center",
+            justifyContent: "center",
+            alignSelf: "center",
+            width: {
+              xs: 1,
+              sm: theme.breakpoints.values.sm,
+              md: theme.breakpoints.values.md,
+              lg: theme.breakpoints.values.lg,
+            },
+          })}
+        >
+          {renderUserForm()}
+        </Box>
+      </Box>
+
       {renderErrorMessage()}
     </>
   );

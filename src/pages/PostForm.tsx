@@ -53,68 +53,34 @@ const PostForm: React.FC = () => {
 
   const renderPostForm = useCallback(
     () => (
-      <Box
-        sx={{
-          padding: "1rem 2.5%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Typography
-          variant="pageHeading"
-          sx={{ marginLeft: "auto", marginRight: "auto" }}
-        >
-          Create a post
-        </Typography>
-        <Box
-          width={{
-            lg: "1200px",
-            md: "800px",
-            sm: "600px",
-            xs: "90%",
-          }}
-          sx={{
-            display: "flex",
-            alignItem: "center",
-            justifyContent: "center",
-            alignSelf: "center",
-            marginTop: "1.5rem",
-          }}
-        >
-          <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
-            <Stack spacing={{ xs: 2, lg: 3 }}>
-              <Input
-                formik={formik}
-                label="Title"
-                name="title"
-                required={true}
-              />
-              <Input
-                formik={formik}
-                label="Body"
-                name="body"
-                multiline
-                maxRows={3}
-                required={true}
-              />
-              <Button
-                variant="contained"
-                sx={{
-                  margin: "3rem auto",
-                  color: "#ffffff",
-                  fontWeight: "bold",
-                  width: "fit-content",
-                  alignSelf: "center",
-                }}
-                disabled={disabled}
-                type="submit"
-              >
-                <Typography variant="buttonText">Submit</Typography>
-              </Button>
-            </Stack>
-          </form>
-        </Box>
-      </Box>
+      <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
+        <Stack spacing={{ xs: 2, lg: 3 }}>
+          <Input formik={formik} label="Title" name="title" required={true} />
+          <Input
+            formik={formik}
+            label="Body"
+            name="body"
+            multiline
+            maxRows={3}
+            required={true}
+          />
+          <Button
+            variant="contained"
+            sx={{
+              my: 3,
+              mx: "auto",
+              color: "background.paper",
+              fontWeight: "bold",
+              width: "fit-content",
+              alignSelf: "center",
+            }}
+            disabled={disabled}
+            type="submit"
+          >
+            <Typography variant="buttonText">Submit</Typography>
+          </Button>
+        </Stack>
+      </form>
     ),
     [formik, disabled]
   );
@@ -132,7 +98,36 @@ const PostForm: React.FC = () => {
 
   return (
     <>
-      {renderPostForm()}
+      <Box
+        sx={{
+          py: 2,
+          px: "2.5%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Typography variant="pageHeading" m="auto">
+          Create a post
+        </Typography>
+        <Box
+          width={{
+            lg: "1200px",
+            md: "800px",
+            sm: "600px",
+            xs: "90%",
+          }}
+          mt={3}
+          sx={{
+            display: "flex",
+            alignItem: "center",
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+        >
+          {renderPostForm()}
+        </Box>
+      </Box>
+
       {renderErrorMessage()}
     </>
   );
