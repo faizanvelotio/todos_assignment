@@ -10,9 +10,10 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
     <Box sx={{ color: "fontGray" }}>
       <Typography variant="commentTitle">{comment.name}</Typography>
       <Typography
+        my={0.15}
         variant="caption"
         component="div"
-        sx={{ color: "fontLightGray", my: 0.15 }}
+        color="fontLightGray"
       >
         {comment.email}
       </Typography>

@@ -62,12 +62,7 @@ const Todo: React.FC<TodoProps> = ({ todo, idx }) => {
         }}
         onClick={handleChange}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <Box display={"flex"} alignItems={"center"}>
           <Typography
             component="div"
             sx={{

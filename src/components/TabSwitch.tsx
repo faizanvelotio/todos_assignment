@@ -39,7 +39,7 @@ const TabSwitch: React.FC<TabProps> = ({ userId, currentActive }) => {
       {currentActive === "posts" && (
         <IconButton
           sx={{
-            marginLeft: "auto",
+            ml: "auto",
           }}
           onClick={createPost}
         >

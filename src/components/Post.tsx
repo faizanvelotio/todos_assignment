@@ -110,7 +110,8 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
                   ) : (
                     <Typography
                       variant="subtitle1"
-                      sx={{ fontWeight: "bold", alignSelf: "center" }}
+                      fontWeight={"bold"}
+                      alignSelf={"center"}
                     >
                       NO COMMENTS YET
                     </Typography>
@@ -122,11 +123,9 @@ const Post: React.FC<PostProps> = ({ post, index, open, handleClose }) => {
             ) : (
               <Box
                 mx="auto"
-                sx={{
-                  color: "error.light",
-                  fontWeight: "bold",
-                  width: "fit-content",
-                }}
+                color="error.light"
+                fontWeight="bold"
+                width="fit-content"
               >
                 Sorry! Unable to fetch comments
               </Box>
